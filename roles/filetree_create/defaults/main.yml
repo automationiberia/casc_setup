@@ -1,2 +1,44 @@
 ---
 # defaults file for filetree_create
+
+ gitlab_project_temp_dir: /tmp/gitlab-clone
+ dir_orgs_vars: orgs_vars
+
+ org_dir_structure_parent:
+   - { path: "collections", mode: '0755' }
+   - { path: "group_vars", mode: '0755' }
+   - { path: "group_vars/all", mode: '0755' }
+   - { path: "{{ dir_orgs_vars }}/{{ gitlab_project }}", mode: '0755' }
+   - { path: "{{ dir_orgs_vars }}/{{ gitlab_project }}/env", mode: '0755' }
+   - { path: "{{ dir_orgs_vars }}/{{ gitlab_project }}/env/common", mode: '0755' }
+
+ org_dir_structure_common:
+   - { path: "controller_credential_types.d", mode: '0755', controller_list: controller_credential_types}
+   - { path: "controller_groups.d", mode: '0755', controller_list: controller_groups }
+   - { path: "controller_inventories.d", mode: '0755', controller_list: controller_inventories }
+   - { path: "controller_job_templates.d", mode: '0755', controller_list: controller_job_templates }
+   - { path: "controller_organizations.d", mode: '0755', controller_list: controller_organizations }
+   - { path: "controller_projects.d", mode: '0755', controller_list: controller_projects }
+   - { path: "controller_roles.d", mode: '0755', controller_list: controller_roles }
+   - { path: "controller_schedules.d", mode: '0755', controller_list: controller_schedules }
+   - { path: "controller_teams.d", mode: '0755', controller_list: controller_teams }
+   - { path: "controller_workflow_job_templates.d", mode: '0755', controller_list: controller_workflows }
+
+ org_dir_structure_env:
+   - { path: "controller_credentials.d", mode: '0755' , controller_list: controller_credentials }
+   - { path: "controller_execution_environments.d", mode: '0755', controller_list: controller_execution_environments }
+   - { path: "controller_users.d", mode: '0755', controller_list: controller_users}
+   - { path: "controller_hosts.d", mode: '0755', controller_list: controller_hosts }
+   - { path: "controller_instance_groups.d", mode: '0755', controller_list: controller_instance_groups }
+   - { path: "controller_inventory_sources.d", mode: '0755', controller_list: controller_inventory_sources }
+   - { path: "controller_settings.d", mode: '0755', controller_list: controller_settings }
+
+ template_playbook_list:
+   - { template: cd-gitlab-webhook-trigger.yml.j2, dest:  cd-gitlab-webhook-trigger.yml }
+   - { template: config-controller-filetree.yml.j2, dest: config-controller-filetree.yml }
+   - { template: drop_diff.yml.j2, dest: drop_diff.yml }
+   - { template: gitlab-ci.yml.j2, dest: .gitlab-ci.yml }
+   - { template: requirements.yml.j2, dest: collections/requirements.yml }
+   - { template: README.md.j2, dest: README.md }
+   - { template: gitignore.j2, dest: .gitignore }
+   - { template: configure_connection_controller_credentials.yml.j2, dest: group_vars/all/configure_connection_controlle    r_credentials.yml }

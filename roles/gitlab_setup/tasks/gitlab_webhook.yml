@@ -1,0 +1,42 @@
+- name: "Setup authentication (block)"
+  block:
+    - name: "Get the Authentication Token for the future requests"
+      ansible.builtin.uri:
+        url: "https://{{ controller_hostname }}/api/v2/workflow_job_templates/?name={{ workflow_job_template_name | urlencode }}"
+        user: "{{ controller_username }}"
+        password: "{{ controller_password }}"
+        method: GET
+        force_basic_auth: true
+        validate_certs: "{{ controller_validate_certs }}"
+        status_code: 200
+      register: authtoken_res
+
+    - name: "Get the Webhook key"
+      ansible.builtin.uri:
+        url: "https://{{ controller_hostname }}/{{ authtoken_res.json.results[0].related.webhook_key }}"
+        user: "{{ controller_username }}"
+        password: "{{ controller_password }}"
+        method: GET
+        force_basic_auth: true
+        validate_certs: "{{ controller_validate_certs }}"
+        status_code: 200
+      register: webhook_key_get
+
+- name: "Set fact"
+  set_fact:
+    controller_webhook_url: "https://{{ controller_hostname }}/{{ authtoken_res.json.results[0].related.webhook_receiver }}"
+    controller_webhook_key: "{{ webhook_key_get.json.webhook_key }}"
+
+- name: "Adding a project hook"
+  community.general.gitlab_hook:
+    api_url: "{{ gitlab_api_url }}"
+    api_token: "{{ gitlab_api_token }}"
+    project: "{{gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}"
+    hook_url: "{{ controller_webhook_url }}"
+    state: present
+    push_events: "{{ gitlab_action_push }}"
+    tag_push_events: "{{ gitlab_action_tag }}"
+    hook_validate_certs: "{{ hook_validate_certs }}"
+    token: "{{  controller_webhook_key }}"
+    validate_certs: "{{ gitlab_validate_certs }}"
+    push_events_branch_filter: "{{ env }}"

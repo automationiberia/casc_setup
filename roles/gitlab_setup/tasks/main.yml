@@ -1,2 +1,90 @@
 ---
 # tasks file for gitlab_setup
+- name: "Assert that all needed variables are defined"
+  assert:
+    that:
+      - gitlab_api_url is defined
+      - gitlab_api_token is defined
+      - gitlab_group is defined
+      - gitlab_subgroup is defined
+      - gitlab_project is defined
+      - gitlab_validate_certs is defined
+      - gitlab_api_user is defined
+      - gitlab_branches is defined
+
+- block:
+  - name: "Create GitLab {{ gitlab_project }} Project"
+    community.general.gitlab_project:
+      api_url: "{{ gitlab_api_url }}"
+      validate_certs: "{{ gitlab_validate_certs }}"
+      api_token: "{{  gitlab_api_token }}"
+      name: "{{ gitlab_project }}"
+      group: "{{ gitlab_group }}/{{ gitlab_subgroup }}"
+      initialize_with_readme: true
+      default_branch:  "{{ gitlab_branches | last }}"
+    register: gitlab_project_creation
+
+  - name: Set git clone repo
+    set_fact:
+      gitlab_repo_clone: "https://{{ gitlab_api_user }}:{{ gitlab_api_token }}@{{ gitlab_api_url | regex_replace('http://|https://','') }}/{{ gitlab_project_creation.project.path_with_namespace}}.git"
+
+  - name: Clone a repo with separate git directory
+    ansible.builtin.git:
+      repo: "{{ gitlab_repo_clone }}"
+      dest: "{{ gitlab_project_temp_dir }}"
+    environment:
+        - GIT_SSL_NO_VERIFY: "true"
+  tags:
+    - git-init
+
+
+- name: Check if local changes exist in git
+  command: git status
+  args:
+    chdir: "{{ gitlab_project_temp_dir }}"
+  register: git_status
+  tags:
+    - git-push
+
+- block:
+    - name: Git - Adding
+      command: "git add *"
+      args:
+        chdir: "{{ gitlab_project_temp_dir }}"
+      register: gitadd
+
+    - name: Git - commiting
+      command: git commit -m "First Commit - Basic Structure was created automatically"
+      args:
+        chdir: "{{ gitlab_project_temp_dir }}"
+      register: gitcommit
+
+    - name: Git - push
+      command: git push
+      args:
+        chdir: "{{ gitlab_project_temp_dir }}"
+      environment:
+        - GIT_SSL_NO_VERIFY: "true"
+      register: gitpush
+  when: '"untracked files present" in git_status.stdout or "Changes not staged for commit" in git_status.stdout'
+  tags:
+    - git-push
+
+- name: Recursively remove temp directory
+  ansible.builtin.file:
+    path: "{{ gitlab_project_temp_dir }}"
+    state: absent
+
+- name: Create and protect branches
+  ansible.builtin.include_tasks: create_branch.yml
+  loop: "{{ gitlab_branches }}"
+  loop_control:
+    loop_var: __gitlab_branches_item
+  tags:
+    - gitlab-create-branches
+
+- name: Setup gitlab Webhook
+  ansible.builtin.include_tasks: gitlab_webhook.yml
+  tags:
+    - never
+    - gitlab-hook

@@ -1,2 +1,90 @@
 ---
 # tasks file for filetree_create
+- name: "Assert that all needed variables are defined"
+  assert:
+    that:
+      - gitlab_project is defined
+
+- name: Create a directories Parent
+  ansible.builtin.file:
+    path: "{{ gitlab_project_temp_dir }}/{{ __org_dir_structure_parent_item.path }}"
+    state: directory
+    mode: "{{ __org_dir_structure_parent_item.mode }}"
+  loop: "{{ org_dir_structure_parent }}"
+  loop_control:
+    loop_var: __org_dir_structure_parent_item
+  tags:
+    - dir
+    - dir-parent
+
+      #- name: Create a directory if it does not exist group_vars
+      #  ansible.builtin.file:
+      #    path: "{{ gitlab_project_temp_dir }}/group_vars/{{ __org_dir_structure_group_vars_item }}"
+      #    state: directory
+      #    mode: '0755'
+      #  loop: "{{ gitlab_branches }}"
+      #  loop_control:
+      #    loop_var: __org_dir_structure_group_vars_item
+      #  tags:
+      #    - dir
+      #    - group-vars
+
+- name: Create common directory structure if it does not exist
+  ansible.builtin.file:
+    path: "{{ gitlab_project_temp_dir }}/{{ dir_orgs_vars }}/{{ gitlab_project }}/env/common/{{ __org_dir_structure_common_item.path }}"
+    state: directory
+    mode: "{{ __org_dir_structure_common_item.mode }}"
+  loop: "{{ org_dir_structure_common }}"
+  loop_control:
+    loop_var: __org_dir_structure_common_item
+  tags:
+    - dir
+    - dir-common
+
+- name: Create env directory structure if it does not exist
+  ansible.builtin.file:
+    path: "{{ gitlab_project_temp_dir }}/{{ dir_orgs_vars }}/{{ gitlab_project }}/env/{{ __org_dir_structure_env_item.1 }}/{{ __org_dir_structure_env_item.0.path }}"
+    state: directory
+    mode: "{{ __org_dir_structure_env_item.0.mode }}"
+  loop: "{{ org_dir_structure_env | product(gitlab_branches)|list }}"
+  loop_control:
+    loop_var: __org_dir_structure_env_item
+  tags:
+    - dir
+    - dir-env
+
+- name: Template init casc file to common
+  ansible.builtin.template:
+    src: "{{ __org_dir_structure_common_item.controller_list }}.j2"
+    dest: "{{ gitlab_project_temp_dir }}/{{ dir_orgs_vars }}/{{ gitlab_project }}/env/common/{{ __org_dir_structure_common_item.path }}/{{ __org_dir_structure_common_item.controller_list }}.yaml"
+    mode: '0644'
+  loop: "{{ org_dir_structure_common }}"
+  loop_control:
+    loop_var: __org_dir_structure_common_item
+  tags:
+    - template
+    - template-common
+
+- name: Template init casc file to env
+  ansible.builtin.template:
+    src: "{{ __org_dir_structure_env_item.0.controller_list }}.j2"
+    dest: "{{ gitlab_project_temp_dir }}/{{ dir_orgs_vars }}/{{ gitlab_project }}/env/{{ __org_dir_structure_env_item.1 }}/{{ __org_dir_structure_env_item.0.path }}/{{ __org_dir_structure_env_item.0.controller_list }}.yaml"
+    mode: '0644'
+  loop: "{{ org_dir_structure_env | product(gitlab_branches)|list }}"
+  loop_control:
+    loop_var: __org_dir_structure_env_item
+  tags:
+    - template
+    - template-env
+
+- name: Template playbooks file to env
+  ansible.builtin.template:
+    src: "{{ __template_playbook_list_item.template }}"
+    dest: "{{ gitlab_project_temp_dir }}/{{ __template_playbook_list_item.dest }}"
+    mode: '0644'
+  loop: "{{ template_playbook_list }}"
+  loop_control:
+    loop_var: __template_playbook_list_item
+  tags:
+    - template
+    - template-playbooks

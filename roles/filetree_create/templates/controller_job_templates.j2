@@ -1,0 +1,60 @@
+---
+controller_templates:
+{%- raw %}
+  - name: "{{ orgs }} CasC_JobTemplates_AAP_CD_Webhook"
+    description: "Template to attend AAP CasC webhook"
+    organization: "{{ orgs }}"
+    project: "{{ orgs }} CasC_Data"
+    inventory: "{{ orgs }} Localhost"
+    playbook: "cd-gitlab-webhook-trigger.yml"
+    job_type: run
+    fact_caching_enabled: false
+    credentials:
+      - "{{ orgs }} {{ env }} AAP Credentials"
+    concurrent_jobs_enabled: true
+    ask_scm_branch_on_launch: true
+    extra_vars:
+      ansible_python_interpreter: /usr/bin/python3
+      ansible_async_dir: /home/runner/.ansible_async/
+
+  - name: "{{ orgs }} CasC_JobTemplates_AAP_CD_Config_Controller"
+    description: "Template to deploy AAP Orgs"
+    organization: "{{ orgs }}"
+    project: "{{ orgs }} CasC_Data"
+    inventory: "{{ orgs }} Localhost"
+    playbook: "config-controller-filetree.yml"
+    job_type: run
+    fact_caching_enabled: false
+    credentials:
+      - "{{ orgs }} {{ env }} AAP Credentials"
+      - "{{ orgs }} {{ env }} Vault Credentials"
+    concurrent_jobs_enabled: true
+    ask_scm_branch_on_launch: true
+    ask_tags_on_launch: true
+    ask_verbosity_on_launch: true
+    ask_variables_on_launch: true
+    extra_vars:
+      ansible_python_interpreter: /usr/bin/python3
+      ansible_async_dir: /home/runner/.ansible_async/
+
+  - name: "{{ orgs }} CasC_JobTemplates_AAP_Drop_Diff"
+    description: "Template to assure Drop Object Diff"
+    organization: "{{ orgs }}"
+    project: "{{ orgs }} CasC_Data"
+    inventory: "{{ orgs }} Localhost"
+    playbook: "drop_diff.yml"
+    job_type: run
+    fact_caching_enabled: false
+    credentials:
+      - "{{ orgs }} {{ env }} AAP Credentials"
+      - "{{ orgs }} {{ env }} Vault Credentials"
+    concurrent_jobs_enabled: true
+    ask_scm_branch_on_launch: true
+    ask_tags_on_launch: true
+    ask_verbosity_on_launch: true
+    ask_variables_on_launch: true
+    extra_vars:
+      ansible_python_interpreter: /usr/bin/python3
+      ansible_async_dir: /home/runner/.ansible_async/
+{% endraw %}
+...
