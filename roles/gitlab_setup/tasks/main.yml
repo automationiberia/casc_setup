@@ -13,65 +13,19 @@
       - gitlab_branches is defined
       - gitlab_default_branch is defined
 
-- block:
-  - name: "Create GitLab {{ gitlab_project }} Project"
-    community.general.gitlab_project:
-      api_url: "{{ gitlab_api_url }}"
-      validate_certs: "{{ gitlab_validate_certs }}"
-      api_token: "{{  gitlab_api_token }}"
-      name: "{{ gitlab_project }}"
-      group: "{{ gitlab_group }}/{{ gitlab_subgroup }}"
-      initialize_with_readme: true
-      default_branch:  "{{ gitlab_default_branch }}"
-      visibility: "{{ gitlab_project_visibility }}"
-    register: gitlab_project_creation
-
-  - name: Set git clone repo
-    set_fact:
-      gitlab_repo_clone: "https://{{ gitlab_api_user }}:{{ gitlab_api_token }}@{{ gitlab_api_url | regex_replace('http://|https://','') }}/{{ gitlab_project_creation.project.path_with_namespace}}.git"
-
-  - name: Clone a repo with separate git directory
-    ansible.builtin.git:
-      repo: "{{ gitlab_repo_clone }}"
-      dest: "{{ gitlab_project_temp_dir }}"
-    environment:
-        - GIT_SSL_NO_VERIFY: "true"
+- name: GitLab Init
+  ansible.builtin.include_tasks: gitlab_init.yml
+  args:
+    apply:
+      tags: git-init
   tags:
     - git-init
 
-
-- name: Check if local changes exist in git
-  command: git status
+- name: GitLab Push
+  ansible.builtin.include_tasks: gitlab_push.yml
   args:
-    chdir: "{{ gitlab_project_temp_dir }}"
-  register: git_status
-  tags:
-    - git-push
-
-- block:
-    - name: Git - Adding
-      command: "git add *"
-      args:
-        chdir: "{{ gitlab_project_temp_dir }}"
-
-    - name: Git - commiting
-      command: git commit -m "First Commit - Basic Structure was created automatically"
-      args:
-        chdir: "{{ gitlab_project_temp_dir }}"
-
-    - name: Git - push
-      command: git push
-      args:
-        chdir: "{{ gitlab_project_temp_dir }}"
-      environment:
-        - GIT_SSL_NO_VERIFY: "true"
-
-    - name: Recursively remove temp directory
-      ansible.builtin.file:
-        path: "{{ gitlab_project_temp_dir }}"
-        state: absent
-
-  when: '"untracked files present" in git_status.stdout or "Changes not staged for commit" in git_status.stdout'
+    apply:
+      tags: git-push
   tags:
     - git-push
 
