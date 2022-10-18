@@ -21,9 +21,9 @@
         chdir: "{{ gitlab_project_temp_dir }}"
       environment:
         - GIT_SSL_NO_VERIFY: "true"
-
-    - name: Recursively remove temp directory
-      ansible.builtin.file:
-        path: "{{ gitlab_project_temp_dir }}"
-        state: absent
   when: '"untracked files present" in git_status.stdout or "Changes not staged for commit" in git_status.stdout'
+
+- name: Recursively remove temp directory
+  ansible.builtin.file:
+    path: "{{ gitlab_project_temp_dir }}"
+    state: absent
