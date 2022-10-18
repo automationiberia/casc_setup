@@ -89,3 +89,15 @@
   tags:
     - template
     - template-playbooks
+
+- name: Template group_vars file to env
+  ansible.builtin.template:
+    src: configure_connection_controller_credentials.yml.j2
+    dest: "{{ gitlab_project_temp_dir }}/group_vars/{{ __template_groupvars_env}}/configure_connection_controller_credentials.yml"
+    mode: '0644'
+  loop: "{{ gitlab_branches }}"
+  loop_control:
+    loop_var: __template_groupvars_env
+  tags:
+    - template
+    - template-groupvars

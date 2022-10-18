@@ -1,3 +1,11 @@
+- name: "Assert that all needed variables are defined"
+  assert:
+    that:
+      - controller_hostname is defined
+      - controller_username is defined
+      - controller_password is defined
+      - controller_validate_certs is defined
+
 - name: "Setup authentication (block)"
   block:
     - name: "Get the Authentication Token for the future requests"
@@ -31,10 +39,10 @@
   community.general.gitlab_hook:
     api_url: "{{ gitlab_api_url }}"
     api_token: "{{ gitlab_api_token }}"
-    project: "{{gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}"
+    project: "{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}"
     hook_url: "{{ controller_webhook_url }}"
     state: present
-    push_events: "{{ gitlab_action_push }}"
+    push_events: "{{ gitlb_action_push }}"
     tag_push_events: "{{ gitlab_action_tag }}"
     hook_validate_certs: "{{ hook_validate_certs }}"
     token: "{{  controller_webhook_key }}"
