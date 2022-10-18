@@ -76,14 +76,19 @@
 
 - name: Create and protect branches
   ansible.builtin.include_tasks: create_branch.yml
+  args:
+    apply:
+      tags: gitlab-branches
   loop: "{{ gitlab_branches }}"
   loop_control:
     loop_var: __gitlab_branches_item
   tags:
-    - gitlab-create-branches
+    - gitlab-branches
 
 - name: Setup gitlab Webhook
   ansible.builtin.include_tasks: gitlab_webhook.yml
+  args:
+    apply:
+      tags: gitlab-hook
   tags:
-    - never
     - gitlab-hook
