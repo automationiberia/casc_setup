@@ -1,11 +1,11 @@
-- name: Create branch from main
+- name: Create branch from {{ gitlab_default_branch }}
   community.general.gitlab_branch:
     api_url: "{{ gitlab_api_url }}"
     validate_certs: "{{ gitlab_validate_certs }}"
     api_token: "{{  gitlab_api_token }}"
     project: "{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}"
     branch: "{{ __gitlab_branches_item }}"
-    ref_branch: "{{ gitlab_branches | last }}"
+    ref_branch: "{{ gitlab_default_branch }}"
     state: present
 
 - name: Create protected branch on env branches
