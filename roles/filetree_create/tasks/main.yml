@@ -20,7 +20,7 @@
 
 - name: Create a directory if it does not exist group_vars
   ansible.builtin.file:
-    path: "{{ gitlab_project_temp_dir }}/group_vars/{{ __org_dir_structure_group_vars_item.name }}"
+    path: "{{ gitlab_project_temp_dir }}/group_vars/{{ __org_dir_structure_group_vars_item }}"
     state: directory
     mode: '0755'
   loop: "{{ gitlab_branches }}"
@@ -44,7 +44,7 @@
 
 - name: Create env directory structure if it does not exist
   ansible.builtin.file:
-    path: "{{ gitlab_project_temp_dir }}/{{ dir_orgs_vars }}/{{ gitlab_project }}/env/{{ __org_dir_structure_env_item.1.name }}/{{ __org_dir_structure_env_item.0.path }}"
+    path: "{{ gitlab_project_temp_dir }}/{{ dir_orgs_vars }}/{{ gitlab_project }}/env/{{ __org_dir_structure_env_item.1 }}/{{ __org_dir_structure_env_item.0.path }}"
     state: directory
     mode: "{{ __org_dir_structure_env_item.0.mode }}"
   loop: "{{ org_dir_structure_env | product(gitlab_branches)|list }}"
@@ -69,7 +69,7 @@
 - name: Template init casc file to env
   ansible.builtin.template:
     src: "{{ __org_dir_structure_env_item.0.controller_list }}.j2"
-    dest: "{{ gitlab_project_temp_dir }}/{{ dir_orgs_vars }}/{{ gitlab_project }}/env/{{ __org_dir_structure_env_item.1.name }}/{{ __org_dir_structure_env_item.0.path }}/{{ __org_dir_structure_env_item.0.controller_list }}.yaml"
+    dest: "{{ gitlab_project_temp_dir }}/{{ dir_orgs_vars }}/{{ gitlab_project }}/env/{{ __org_dir_structure_env_item.1 }}/{{ __org_dir_structure_env_item.0.path }}/{{ __org_dir_structure_env_item.0.controller_list }}.yaml"
     mode: '0644'
   loop: "{{ org_dir_structure_env | product(gitlab_branches)|list }}"
   loop_control:
@@ -93,7 +93,7 @@
 - name: Template group_vars file to env
   ansible.builtin.template:
     src: configure_connection_controller_credentials.yml.j2
-    dest: "{{ gitlab_project_temp_dir }}/group_vars/{{ __template_groupvars_env.name}}/configure_connection_controller_credentials.yml"
+    dest: "{{ gitlab_project_temp_dir }}/group_vars/{{ __template_groupvars_env}}/configure_connection_controller_credentials.yml"
     mode: '0644'
   loop: "{{ gitlab_branches }}"
   loop_control:
