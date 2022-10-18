@@ -6,7 +6,6 @@
       - controller_password is defined
       - controller_validate_certs is defined
       - workflow_job_template_name is defined
-      - gitlab_branch_filter is defined
 
 - name: "Setup authentication (block)"
   block:
