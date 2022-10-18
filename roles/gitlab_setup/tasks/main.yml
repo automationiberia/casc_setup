@@ -22,6 +22,7 @@
       group: "{{ gitlab_group }}/{{ gitlab_subgroup }}"
       initialize_with_readme: true
       default_branch:  "{{ gitlab_branches | last }}"
+      visibility: "{{ gitlab_project_visibility }}"
     register: gitlab_project_creation
 
   - name: Set git clone repo

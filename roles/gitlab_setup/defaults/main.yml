@@ -7,3 +7,4 @@ hook_validate_certs: false
 gitlab_action_push: true
 gitlab_action_tag: false
 
+gitlab_project_visibility: private
