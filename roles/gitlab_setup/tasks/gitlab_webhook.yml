@@ -5,12 +5,14 @@
       - controller_username is defined
       - controller_password is defined
       - controller_validate_certs is defined
+      - workflow_job_template_name is defined
+      - gitlab_branch_filter is defined
 
 - name: "Setup authentication (block)"
   block:
     - name: "Get the Authentication Token for the future requests"
       ansible.builtin.uri:
-        url: "https://{{ controller_hostname }}/api/v2/workflow_job_templates/?name={{ workflow_job_template_name | urlencode }}"
+        url: "https://{{ controller_hostname }}/api/v2/workflow_job_templates/{{ workflow_job_template_name | urlencode }}"
         user: "{{ controller_username }}"
         password: "{{ controller_password }}"
         method: GET
@@ -42,9 +44,9 @@
     project: "{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}"
     hook_url: "{{ controller_webhook_url }}"
     state: present
-    push_events: "{{ gitlb_action_push }}"
+    push_events: "{{ gitlab_action_push }}"
     tag_push_events: "{{ gitlab_action_tag }}"
     hook_validate_certs: "{{ hook_validate_certs }}"
     token: "{{  controller_webhook_key }}"
     validate_certs: "{{ gitlab_validate_certs }}"
-    push_events_branch_filter: "{{ env }}"
+    push_events_branch_filter: "{{ gitlab_branch_filter }}"
