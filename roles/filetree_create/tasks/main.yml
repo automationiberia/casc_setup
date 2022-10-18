@@ -4,6 +4,7 @@
   assert:
     that:
       - gitlab_project is defined
+      - gitlab_branches is defined
 
 - name: Create a directories Parent
   ansible.builtin.file:
@@ -17,17 +18,17 @@
     - dir
     - dir-parent
 
-      #- name: Create a directory if it does not exist group_vars
-      #  ansible.builtin.file:
-      #    path: "{{ gitlab_project_temp_dir }}/group_vars/{{ __org_dir_structure_group_vars_item }}"
-      #    state: directory
-      #    mode: '0755'
-      #  loop: "{{ gitlab_branches }}"
-      #  loop_control:
-      #    loop_var: __org_dir_structure_group_vars_item
-      #  tags:
-      #    - dir
-      #    - group-vars
+- name: Create a directory if it does not exist group_vars
+  ansible.builtin.file:
+    path: "{{ gitlab_project_temp_dir }}/group_vars/{{ __org_dir_structure_group_vars_item }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ gitlab_branches }}"
+  loop_control:
+    loop_var: __org_dir_structure_group_vars_item
+  tags:
+    - dir
+    - group-vars
 
 - name: Create common directory structure if it does not exist
   ansible.builtin.file:
