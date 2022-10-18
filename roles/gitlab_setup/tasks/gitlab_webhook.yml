@@ -49,4 +49,4 @@
     hook_validate_certs: "{{ hook_validate_certs }}"
     token: "{{  controller_webhook_key }}"
     validate_certs: "{{ gitlab_validate_certs }}"
-    push_events_branch_filter: "{{ gitlab_branch_filter }}"
+    push_events_branch_filter: "{{ gitlab_branch_filter | default(omit, true) }}"
