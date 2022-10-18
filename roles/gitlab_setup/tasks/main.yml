@@ -11,6 +11,7 @@
       - gitlab_validate_certs is defined
       - gitlab_api_user is defined
       - gitlab_branches is defined
+      - gitlab_default_branch is defined
 
 - block:
   - name: "Create GitLab {{ gitlab_project }} Project"
@@ -21,7 +22,7 @@
       name: "{{ gitlab_project }}"
       group: "{{ gitlab_group }}/{{ gitlab_subgroup }}"
       initialize_with_readme: true
-      default_branch:  "{{ gitlab_branches | last }}"
+      default_branch:  "{{ gitlab_default_branch }}"
       visibility: "{{ gitlab_project_visibility }}"
     register: gitlab_project_creation
 
