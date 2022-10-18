@@ -52,13 +52,11 @@
       command: "git add *"
       args:
         chdir: "{{ gitlab_project_temp_dir }}"
-      register: gitadd
 
     - name: Git - commiting
       command: git commit -m "First Commit - Basic Structure was created automatically"
       args:
         chdir: "{{ gitlab_project_temp_dir }}"
-      register: gitcommit
 
     - name: Git - push
       command: git push
@@ -66,15 +64,15 @@
         chdir: "{{ gitlab_project_temp_dir }}"
       environment:
         - GIT_SSL_NO_VERIFY: "true"
-      register: gitpush
+
+    - name: Recursively remove temp directory
+      ansible.builtin.file:
+        path: "{{ gitlab_project_temp_dir }}"
+        state: absent
+
   when: '"untracked files present" in git_status.stdout or "Changes not staged for commit" in git_status.stdout'
   tags:
     - git-push
-
-- name: Recursively remove temp directory
-  ansible.builtin.file:
-    path: "{{ gitlab_project_temp_dir }}"
-    state: absent
 
 - name: Create and protect branches
   ansible.builtin.include_tasks: create_branch.yml
