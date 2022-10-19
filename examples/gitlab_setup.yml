@@ -50,11 +50,3 @@
       loop_control:
         loop_var: __gitlab_branches_item
       tags: git-branches
-
-    - name: GitLab Webhook
-      ansible.builtin.include_role:
-        name: gitlab_setup
-        tasks_from: gitlab_webhook.yml
-        apply:
-          tags: git-hook
-      tags: git-hook

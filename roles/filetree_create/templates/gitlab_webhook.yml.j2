@@ -1,0 +1,29 @@
+---
+{%- raw %}
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    gitlab_api_url: https://gitlab.testing.com
+    gitlab_validate_certs: false
+    gitlab_api_user: aap-demo
+    gitlab_api_token: "TOKEN_GITLAB"
+    gitlab_group: gitlab_group
+    gitlab_subgroup: gitlab_subgroup
+    gitlab_project: gitlab_project
+    gitlab_visibility: internal
+    gitlab_default_branch: prod_casc
+    gitlab_branches:
+      - prod_casc
+      - dev_casc
+
+  tasks:
+    - name: GitLab Webhook
+      ansible.builtin.include_role:
+        name: gitlab_setup
+        tasks_from: gitlab_webhook.yml
+        apply:
+          tags: git-hook
+      tags: git-hook
+{% endraw %}
+...

@@ -41,3 +41,4 @@ template_playbook_list:
   - { template: requirements.yml.j2, dest: collections/requirements.yml }
   - { template: README.md.j2, dest: README.md }
   - { template: gitignore.j2, dest: .gitignore }
+  - { template: gitlab_webhook.yml.j2, dest: gitlab_webhook.yml }
