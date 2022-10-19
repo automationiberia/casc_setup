@@ -14,9 +14,6 @@
   loop: "{{ org_dir_structure_parent }}"
   loop_control:
     loop_var: __org_dir_structure_parent_item
-  tags:
-    - dir
-    - dir-parent
 
 - name: Create a directory if it does not exist group_vars
   ansible.builtin.file:
@@ -26,9 +23,6 @@
   loop: "{{ gitlab_branches }}"
   loop_control:
     loop_var: __org_dir_structure_group_vars_item
-  tags:
-    - dir
-    - group-vars
 
 - name: Create common directory structure if it does not exist
   ansible.builtin.file:
@@ -38,9 +32,6 @@
   loop: "{{ org_dir_structure_common }}"
   loop_control:
     loop_var: __org_dir_structure_common_item
-  tags:
-    - dir
-    - dir-common
 
 - name: Create env directory structure if it does not exist
   ansible.builtin.file:
@@ -50,9 +41,6 @@
   loop: "{{ org_dir_structure_env | product(gitlab_branches)|list }}"
   loop_control:
     loop_var: __org_dir_structure_env_item
-  tags:
-    - dir
-    - dir-env
 
 - name: Template init casc file to common
   ansible.builtin.template:
@@ -62,9 +50,6 @@
   loop: "{{ org_dir_structure_common }}"
   loop_control:
     loop_var: __org_dir_structure_common_item
-  tags:
-    - template
-    - template-common
 
 - name: Template init casc file to env
   ansible.builtin.template:
@@ -74,9 +59,6 @@
   loop: "{{ org_dir_structure_env | product(gitlab_branches)|list }}"
   loop_control:
     loop_var: __org_dir_structure_env_item
-  tags:
-    - template
-    - template-env
 
 - name: Template playbooks file to env
   ansible.builtin.template:
@@ -86,9 +68,6 @@
   loop: "{{ template_playbook_list }}"
   loop_control:
     loop_var: __template_playbook_list_item
-  tags:
-    - template
-    - template-playbooks
 
 - name: Template group_vars file to env
   ansible.builtin.template:
@@ -98,6 +77,3 @@
   loop: "{{ gitlab_branches }}"
   loop_control:
     loop_var: __template_groupvars_env
-  tags:
-    - template
-    - template-groupvars
