@@ -1,2 +1,10 @@
 ---
 # defaults file for gitlab_setup
+
+gitlab_project_temp_dir: /tmp/gitlab-clone
+hook_validate_certs: false
+
+gitlab_action_push: true
+gitlab_action_tag: false
+
+gitlab_project_visibility: private

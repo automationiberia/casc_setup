@@ -1,0 +1,29 @@
+---
+{%- raw %}
+- hosts: all
+  connection: local
+  gather_facts: no
+  vars:
+    controller_username: "{{ vault_controller_username | default(lookup('env', 'CONTROLLER_USERNAME')) }}"
+    controller_password: "{{ vault_controller_password | default(lookup('env', 'CONTROLLER_PASSWORD')) }}"
+    controller_hostname: "{{ vault_controller_hostname | default(lookup('env', 'CONTROLLER_HOST')) }}"
+    controller_validate_certs: "{{ vault_controller_validate_certs | default(lookup('env', 'CONTROLLER_VERIFY_SSL')) }}"
+    gitlab_api_url: https://gitlab.testing.com
+    gitlab_validate_certs: false
+    gitlab_api_user: aap-demo
+    gitlab_api_token: "TOKEN_GITLAB"
+    gitlab_group: gitlab_group
+    gitlab_subgroup: gitlab_subgroup
+    gitlab_project: gitlab_project
+    gitlab_action_push: true
+    gitlab_action_tag: false
+    gitlab_branch_filter: dev-casc
+    workflow_job_template_name: "gitlab_project CasC_AAP_Workflow"
+
+  tasks:
+    - name: GitLab Webhook
+      ansible.builtin.include_role:
+        name: gitlab_setup
+        tasks_from: gitlab_webhook.yml
+{% endraw %}
+...

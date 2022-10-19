@@ -1,0 +1,29 @@
+- name: Check if local changes exist in git
+  command: git status
+  args:
+    chdir: "{{ gitlab_project_temp_dir }}"
+  register: git_status
+
+- block:
+    - name: Git - Adding
+      command: "git add *"
+      args:
+        chdir: "{{ gitlab_project_temp_dir }}"
+
+    - name: Git - commiting
+      command: git commit -m "First Commit - Basic Structure was created automatically"
+      args:
+        chdir: "{{ gitlab_project_temp_dir }}"
+
+    - name: Git - push
+      command: git push
+      args:
+        chdir: "{{ gitlab_project_temp_dir }}"
+      environment:
+        - GIT_SSL_NO_VERIFY: "true"
+  when: '"untracked files present" in git_status.stdout or "Changes not staged for commit" in git_status.stdout'
+
+- name: Recursively remove temp directory
+  ansible.builtin.file:
+    path: "{{ gitlab_project_temp_dir }}"
+    state: absent
