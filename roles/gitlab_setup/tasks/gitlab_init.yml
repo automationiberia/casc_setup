@@ -7,12 +7,12 @@
     group: "{{ gitlab_group }}/{{ gitlab_subgroup }}"
     initialize_with_readme: true
     default_branch:  "{{ gitlab_default_branch }}"
-    visibility: "{{ gitlab_project_visibility }}"
+    visibility: "{{ gitlab_visibility }}"
   register: gitlab_project_creation
 
 - name: Set git clone repo
   set_fact:
-    gitlab_repo_clone: "https://{{ gitlab_api_user }}:{{ gitlab_api_token }}@{{ gitlab_api_url | regex_replace('http://|https://','') }}/{{ gitlab_project_creation.project.path_with_namespace}}.git"
+    gitlab_repo_clone: "{{ gitlab_http_protocol }}://{{ gitlab_api_user }}:{{ gitlab_api_token }}@{{ gitlab_api_url | regex_replace('http://|https://','') }}/{{ gitlab_project_creation.project.path_with_namespace}}.git"
 
 - name: Clone a repo with separate git directory
   ansible.builtin.git:

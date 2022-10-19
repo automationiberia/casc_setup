@@ -12,6 +12,7 @@
       - gitlab_api_user is defined
       - gitlab_branches is defined
       - gitlab_default_branch is defined
+      - gitlab_http_protocol is defined
 
 - name: GitLab Init
   ansible.builtin.include_tasks: gitlab_init.yml
