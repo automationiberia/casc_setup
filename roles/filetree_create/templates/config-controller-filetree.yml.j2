@@ -10,7 +10,6 @@
     controller_password: "{{ vault_controller_password | default(lookup('env', 'CONTROLLER_PASSWORD')) }}"
     controller_hostname: "{{ vault_controller_hostname | default(lookup('env', 'CONTROLLER_HOST')) }}"
     controller_validate_certs: "{{ vault_controller_validate_certs | default(lookup('env', 'CONTROLLER_VERIFY_SSL')) }}"
-
   pre_tasks:
     - name: "Setup authentication (block)"
       block:
@@ -31,8 +30,8 @@
             controller_oauthtoken_url: "{{ authtoken_res.json.url }}"
       no_log: "{{ controller_configuration_filetree_read_secure_logging | default('false') }}"
       when: controller_oauthtoken is not defined
-
-
+      tags:
+        - always
   roles:
     - {role: redhat_cop.controller_configuration.filetree_read, assign_galaxy_credentials_to_org: false}
     - {role: redhat_cop.controller_configuration.dispatch, assign_galaxy_credentials_to_org: false}
@@ -66,6 +65,5 @@
         validate_certs: "{{ controller_validate_certs }}"
         status_code: 204
       when: controller_oauthtoken_url is defined
-
 {% endraw %}
 ...

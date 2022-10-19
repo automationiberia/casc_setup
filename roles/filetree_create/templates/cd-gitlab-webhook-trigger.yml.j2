@@ -25,6 +25,27 @@
       loop: "{{ list_of_dirs }}"
       when: input_var | type_debug is match('list')
 
+    - name: Configure Controller Job Launch | Launch launch_jobs Drop Diff (Delete)
+      include_role:
+        name: redhat_cop.controller_configuration.job_launch
+      vars:
+        controller_launch_jobs:
+          - name: "{{ org_tags.key }} CasC_JobTemplates_AAP_Drop_Diff"
+            scm_branch: "{{ gitlab_scm_branch }}"
+            extra_vars:
+              orgs: "{{ org_tags.key }}"
+              dir_orgs_vars: 'orgs_vars'
+              ansible_python_interpreter: "/usr/bin/python3"
+              env: "{{ env }}"
+              gitlab_scm_branch: "{{ gitlab_scm_branch }}"
+            tags: "{{ org_tags.value }}"
+            wait: true
+            verbosity: 0
+      with_dict: "{{ org_dirs_dict }}"
+      loop_control:
+        loop_var: org_tags
+      when: org_dirs_dict is defined
+
     - name: Configure Controller Job Launch | Launch launch_jobs creation
       include_role:
         name: redhat_cop.controller_configuration.job_launch
