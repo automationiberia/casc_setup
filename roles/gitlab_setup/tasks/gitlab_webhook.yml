@@ -6,12 +6,13 @@
       - controller_password is defined
       - controller_validate_certs is defined
       - workflow_job_template_name is defined
+      - gitlab_project is defined
 
 - name: "Setup authentication (block)"
   block:
     - name: "Get the Authentication Token for the future requests"
       ansible.builtin.uri:
-        url: "https://{{ controller_hostname }}/api/v2/workflow_job_templates/{{ workflow_job_template_name | urlencode }}"
+        url: "https://{{ controller_hostname }}/api/v2/workflow_job_templates/?name={{ workflow_job_template_name | urlencode }}"
         user: "{{ controller_username }}"
         password: "{{ controller_password }}"
         method: GET
@@ -33,7 +34,7 @@
 
 - name: "Set fact"
   set_fact:
-    controller_webhook_url: "https://{{ controller_hostname }}/{{ authtoken_res.json.results[0].related.webhook_receiver }}"
+    controller_webhook_url: "https://{{ controller_hostname }}/api/v2/workflow_job_templates/{{  workflow_job_template_name | urlencode }}++{{ gitlab_project }}/gitlab/"
     controller_webhook_key: "{{ webhook_key_get.json.webhook_key }}"
 
 - name: "Adding a project hook"
