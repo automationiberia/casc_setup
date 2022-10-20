@@ -19,7 +19,7 @@
 
 ## Steps to setup CasC
 
-Install this collection and configure a playbook to use it (there ir an example in this repository inside the example directory. You need to change the variables defined in the playbook itself or use extra-vars).
+Install this collection and configure a playbook to use it (there is an example in this repository inside the example directory. You need to change the variables defined in the playbook itself or use extra-vars).
 
 Launch the playbook to init git and create the initial basic content. To to that, use tags git-init, filetree_create, git-push and git-branches:
 
