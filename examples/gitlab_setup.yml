@@ -12,6 +12,7 @@
     gitlab_project: gitlab_project
     gitlab_visibility: internal
     gitlab_default_branch: prod_casc
+    gitlab_http_protocol: http
     gitlab_branches:
       - prod_casc
       - dev_casc
