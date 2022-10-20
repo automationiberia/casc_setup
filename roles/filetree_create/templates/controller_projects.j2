@@ -9,12 +9,11 @@ controller_projects:
     scm_url: "{{ gitlab_project_creation.project.ssh_url_to_repo }}"
 {%- raw %}
     scm_credential: "{{ orgs }} {{ env }} Gitlab Credential"
-    scm_branch: "{{ gitlab_scm_branch }}"
+    scm_branch: "{{ gitlab_scm_branch | default(env) }}"
     scm_clean: false
     scm_delete_on_update: false
     scm_update_on_launch: false
     scm_update_cache_timeout: 86400
     allow_override: true
 {% endraw %}
-
 ...
