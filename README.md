@@ -47,9 +47,9 @@ ansible-vault encrypt group_vars/casc-dev/configure_connection_controller_creden
 ansible-vault encrypt group_vars/casc-prd/configure_connection_controller_credentials.yml
 ```
 
-Configure every credential needed essentially for casc (there are variables to change in the following examples). Remember that it is needed to save the credentials propertly so it must encrypt every credential with vault before push to a git repository: 
+Configure every credential needed essentially for casc (there are variables to change in the following examples). Remember that it is needed to save the credentials propertly so it must encrypt every credential with vault before push to a git repository:
 
-- controller_credentials_galaxy.yml with Ansible Hub credentials 
+- controller_credentials_galaxy.yml with Ansible Hub credentials
 ```
 ---
 controller_credentials:
@@ -234,5 +234,5 @@ git branch -D configure_webhooks
 git checkout -- gitlab_webhook.yml
 ```
 
-Check in git the webhooks created
+Check the webhooks created in git
 
