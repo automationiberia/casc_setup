@@ -5,17 +5,13 @@
 
 |Role Name|Description|
 |:---:|:---:|
-|||
-|||
+|filetree_create| Create a basic Configuration as Code filetree to setup the day zero|
+|gitlab_setup| Create the repository, Upload the content crated, for example, by filtree_create role of this collection, Create and protect branches and configure the webooks|
+|github_setup| WIP |
 
 ### Role Variables
 
-|Roles|Variable Name|Default Value|Required|Description|
-|:---:|:---:|:---:|:---:|:---:|
-||||||
-||||||
-||||||
-
+You can see Role variables in the README of each role
 
 ## Steps to setup CasC
 

@@ -1,31 +1,56 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+Create a basic Configuration as Code filetree to setup the day zero
 
 Requirements
 ------------
-
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+N/A
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+|Variable Name|Default Value|Description|
+|:---:|:---:|:---:|
+|gitlab_project_temp_dir|/tmp/gitlab-clone|Temporary work directory to create filetree configuration for CasC |
+|org_dir_structure_parent|- { path: "collections", mode: '0755' }<br>- { path: "group_vars", mode: '0755' }<br>- { path: "group_vars/all", mode: '0755' }<br>- { path: "{{ dir_orgs_vars }}/{{ gitlab_project }}", mode: '0755' }<br>- { path: "{{ dir_orgs_vars }}/{{ gitlab_project }}/env", mode: '0755' }<br>- { path: "{{ dir_orgs_vars }}/{{ gitlab_project }}/env/common", mode: '0755' }|Basic structure for a CasC repository|
+|org_dir_structure_common|- { path: "controller_credential_types.d", mode: '0755', controller_list: controller_credential_types}<br>- { path: "controller_groups.d", mode: '0755', controller_list: controller_groups }<br>- { path: "controller_inventories.d", mode: '0755', controller_list: controller_inventories }<br>- { path: "controller_job_templates.d", mode: '0755', controller_list: controller_job_templates }<br>- { path: "controller_organizations.d", mode: '0755', controller_list: controller_organizations }<br>- { path: "controller_projects.d", mode: '0755', controller_list: controller_projects }<br>- { path: "controller_roles.d", mode: '0755', controller_list: controller_roles }<br>- { path: "controller_schedules.d", mode: '0755', controller_list: controller_schedules }<br>- { path: "controller_teams.d", mode: '0755', controller_list: controller_teams }<br>- { path: "controller_workflow_job_templates.d", mode: '0755', controller_list: controller_workflows }|Structure for common objects in controller/tower|
+|org_dir_structure_env|- { path: "controller_credentials.d", mode: '0755' , controller_list: controller_credentials }<br>- { path: "controller_execution_environments.d", mode: '0755', controller_list: controller_execution_environments }<br>- { path: "controller_users.d", mode: '0755', controller_list: controller_users}<br>- { path: "controller_hosts.d", mode: '0755', controller_list: controller_hosts }<br>- { path: "controller_instance_groups.d", mode: '0755', controller_list: controller_instance_groups }<br>- { path: "controller_inventory_sources.d", mode: '0755', controller_list: controller_inventory_sources }<br>- { path: "controller_settings.d", mode: '0755', controller_list: controller_settings }|Structure for particular env objects in controller/tower|
+|template_playbook_list|- { template: cd-gitlab-webhook-trigger.yml.j2, dest:  cd-gitlab-webhook-trigger.yml }<br>- { template: config-controller-filetree.yml.j2, dest: config-controller-filetree.yml }<br>- { template: drop_diff.yml.j2, dest: drop_diff.yml }<br>- { template: gitlab-ci.yml.j2, dest: .gitlab-ci.yml }<br>- { template: requirements.yml.j2, dest: collections/requirements.yml }<br>- { template: README.md.j2, dest: README.md }<br>- { template: gitignore.j2, dest: .gitignore }<br>- { template: gitlab_webhook.yml.j2, dest: gitlab_webhook.yml }|List of playbooks which will be generated|
+|gitlab_project|N/A|Name of gitlab project|
+|gitlab_branches|N/A|List with gitlab branches|
+
+
+
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+N/A
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    gitlab_project: gitlab_project
+    gitlab_branches:
+      - prod_casc
+      - dev_casc
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+  tasks:
+
+    - name: Create dir structure
+      ansible.builtin.include_role:
+        name: filetree_create
+        apply:
+          tags: filetree_create
+      tags: filetree_create
+```
 
 License
 -------
@@ -35,4 +60,5 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+- silvinux <silvinux7@gmail.com>
+- adonis <adonis@redhat.com>

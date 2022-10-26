@@ -41,7 +41,7 @@
           tags: git-push
       tags: git-push
 
-    - name: GitLab push
+    - name: GitLab create branches
       ansible.builtin.include_role:
         name: gitlab_setup
         tasks_from:  create_branch.yml

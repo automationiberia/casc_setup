@@ -1,3 +1,14 @@
+- name: "Assert that all needed variables are defined"
+  assert:
+    that:
+      - gitlab_api_url is defined
+      - gitlab_api_token is defined
+      - gitlab_group is defined
+      - gitlab_subgroup is defined
+      - gitlab_project is defined
+      - gitlab_validate_certs is defined
+      - gitlab_branches is defined
+
 - name: Create branch from {{ gitlab_default_branch }}
   community.general.gitlab_branch:
     api_url: "{{ gitlab_api_url }}"
