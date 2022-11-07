@@ -15,10 +15,10 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 1. Clone the repository and create a new day-zero branch
 
   ```
-  git clone {{ gitlab_api_url }}/{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}.git
-  
+  git clone {{ gitlab_api_url | regex_replace('http://|https://','ssh@') }}/{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}.git
+
   cd {{ gitlab_project }}/
-  
+
   git checkout -b casc-dev-day0
   ```
 
@@ -45,9 +45,9 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
   ```
   [dev]
   {{ controller_dev }}
- 
+
   [pro]
-  {{ controller_pro }} 
+  {{ controller_pro }}
   ```
 
 5. Setting vault credential file
@@ -65,19 +65,19 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
   ansible-navigator run config-controller-filetree.yml -i inventory -l dev -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: dev}' -m stdout --eei {{ automation_hub }}/ee-casc
 
-  ansible-navigator run config-controller-filetree.yml -i inventory -l pro -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: pro}' -m stdout --eei {{ automation_hub }}/ee-casc >>
+  ansible-navigator run config-controller-filetree.yml -i inventory -l pro -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: pro}' -m stdout --eei {{ automation_hub }}/ee-casc
   ```
 
 ### GitOps flow
 
-1. 
+1.
 
-2. 
+2.
 
-3. 
+3.
 
-4. 
+4.
 
-5. 
+5.
 
-6. 
+6.
