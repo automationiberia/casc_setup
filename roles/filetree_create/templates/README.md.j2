@@ -1,53 +1,83 @@
 # {{ gitlab_project }}
 
-## Getting started
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Description
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+This repository give us a place to maintain a control versions of the every object in an Ansible Automation Controller.
 
-## Add your files
+CasC (Configuration as Code)  means the posibility of define every object of Ansible Automation Controller as code in a git repository. In this lab, we have defined two environments (dev and pro) to do the CasC and interact with a gitops approach between them.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## Steps to test the CasC approach
+### Day-Zero from CLI
 
-```
-cd existing_repo
-git remote add origin http://ivan-gitlabrunner.bcnconsulting.com/acme/ansible-controller/org4-from-git.git
-git branch -M main
-git push -uf origin main
-```
+Before using CasC as a GitOps approach, it is needed to launch an initialization from CLI which it is called Day-Zero.
 
-## Integrate with your tools
+1. Clone the repository and create a new day-zero branch
 
-- [ ] [Set up project integrations](http://ivan-gitlabrunner.bcnconsulting.com/acme/ansible-controller/org4-from-git/-/settings/integrations)
+  ```
+  git clone {{ gitlab_api_url }}/{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}.git
+  
+  cd {{ gitlab_project }}/
+  
+  git checkout -b casc-dev-day0
+  ```
 
-## Collaborate with your team
+2. Edit credentials to connect to the controller for day zero.
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+  ```
+  vi group_vars/dev/configure_connection_controller_credentials.yml
+  vi group_vars/prd/configure_connection_controller_credentials.yml
+  ansible-vault encrypt group_vars/dev/configure_connection_controller_credentials.yml group_vars/prd/configure_connection_controller_credentials.yml
+  ```
 
-## Test and Deploy
+3. Edit credentials for day zero
 
-Use the built-in continuous integration in GitLab.
+  ```
+  vi orgs_vars/casc-twitch-demo/env/dev/controller_credentials.d/controller_credentials.yml
+  ansible-vault encrypt orgs_vars/{{ gitlab_project }}/env/dev/controller_credentials.d/*
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+  vi orgs_vars/casc-twitch-demo/env/pro/controller_credentials.d/controller_credentials.yml
+  ansible-vault encrypt orgs_vars/{{ gitlab_project }}/env/pro/controller_credentials.d/*
+  ```
 
-***
+4. Create the inventory file. Example:
 
-# Editing this README
+  ```
+  [dev]
+  {{ controller_dev }}
+ 
+  [pro]
+  {{ controller_pro }} 
+  ```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+5. Setting vault credential file
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+  ```
+  echo "my_vault_pass" > ~/.vault_password
+  ln ~/.vault_password .
+  ANSIBLE_VAULT_PASSWORD_FILE=.vault_password
+  ```
 
-## Name
-Choose a self-explaining name for your project.
+6. Launch ansible-navigator from CLI to setup day-zero of CasC. Example (it is needed to change the Execution Environment)
+
+  ```
+  podman login {{ automation_hub }}
+
+  ansible-navigator run config-controller-filetree.yml -i inventory -l dev -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: dev}' -m stdout --eei {{ automation_hub }}/ee-casc
+
+  ansible-navigator run config-controller-filetree.yml -i inventory -l pro -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: pro}' -m stdout --eei {{ automation_hub }}/ee-casc >>
+  ```
+
+### GitOps flow
+
+1. 
+
+2. 
+
+3. 
+
+4. 
+
+5. 
+
+6. 
