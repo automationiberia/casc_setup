@@ -26,17 +26,17 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
   ```
   vi group_vars/dev/configure_connection_controller_credentials.yml
-  vi group_vars/prd/configure_connection_controller_credentials.yml
+  vi group_vars/pro/configure_connection_controller_credentials.yml
   ansible-vault encrypt group_vars/dev/configure_connection_controller_credentials.yml group_vars/prd/configure_connection_controller_credentials.yml
   ```
 
 3. Edit credentials for day zero
 
   ```
-  vi orgs_vars/casc-twitch-demo/env/dev/controller_credentials.d/controller_credentials.yml
+  vi orgs_vars/{{ gitlab_project }}/env/dev/controller_credentials.d/controller_credentials.yml
   ansible-vault encrypt orgs_vars/{{ gitlab_project }}/env/dev/controller_credentials.d/*
 
-  vi orgs_vars/casc-twitch-demo/env/pro/controller_credentials.d/controller_credentials.yml
+  vi orgs_vars/{{ gitlab_project }}/env/pro/controller_credentials.d/controller_credentials.yml
   ansible-vault encrypt orgs_vars/{{ gitlab_project }}/env/pro/controller_credentials.d/*
   ```
 
