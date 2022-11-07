@@ -45,7 +45,7 @@
 - name: Template init casc file to common
   ansible.builtin.template:
     src: "{{ __org_dir_structure_common_item.controller_list }}.j2"
-    dest: "{{ gitlab_project_temp_dir }}/{{ dir_orgs_vars }}/{{ gitlab_project }}/env/common/{{ __org_dir_structure_common_item.path }}/{{ __org_dir_structure_common_item.controller_list }}.yaml"
+    dest: "{{ gitlab_project_temp_dir }}/{{ dir_orgs_vars }}/{{ gitlab_project }}/env/common/{{ __org_dir_structure_common_item.path }}/{{ __org_dir_structure_common_item.controller_list }}.yml"
     mode: '0644'
   loop: "{{ org_dir_structure_common }}"
   loop_control:
@@ -54,7 +54,7 @@
 - name: Template init casc file to env
   ansible.builtin.template:
     src: "{{ __org_dir_structure_env_item.0.controller_list }}.j2"
-    dest: "{{ gitlab_project_temp_dir }}/{{ dir_orgs_vars }}/{{ gitlab_project }}/env/{{ __org_dir_structure_env_item.1 }}/{{ __org_dir_structure_env_item.0.path }}/{{ __org_dir_structure_env_item.0.controller_list }}.yaml"
+    dest: "{{ gitlab_project_temp_dir }}/{{ dir_orgs_vars }}/{{ gitlab_project }}/env/{{ __org_dir_structure_env_item.1 }}/{{ __org_dir_structure_env_item.0.path }}/{{ __org_dir_structure_env_item.0.controller_list }}.yml"
     mode: '0644'
   loop: "{{ org_dir_structure_env | product(gitlab_branches)|list }}"
   loop_control:
@@ -62,12 +62,12 @@
 
 - name: Template playbooks file to env
   ansible.builtin.template:
-    src: "{{ __template_playbook_list_item.template }}"
-    dest: "{{ gitlab_project_temp_dir }}/{{ __template_playbook_list_item.dest }}"
+    src: "{{ __other_template_list_item.template }}"
+    dest: "{{ gitlab_project_temp_dir }}/{{ __other_template_list_item.dest }}"
     mode: '0644'
-  loop: "{{ template_playbook_list }}"
+  loop: "{{ other_template_list }}"
   loop_control:
-    loop_var: __template_playbook_list_item
+    loop_var: __other_template_list_item
 
 - name: Template group_vars file to env
   ansible.builtin.template:

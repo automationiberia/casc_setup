@@ -19,6 +19,9 @@ Role Variables
 |template_playbook_list|- { template: cd-gitlab-webhook-trigger.yml.j2, dest:  cd-gitlab-webhook-trigger.yml }<br>- { template: config-controller-filetree.yml.j2, dest: config-controller-filetree.yml }<br>- { template: drop_diff.yml.j2, dest: drop_diff.yml }<br>- { template: gitlab-ci.yml.j2, dest: .gitlab-ci.yml }<br>- { template: requirements.yml.j2, dest: collections/requirements.yml }<br>- { template: README.md.j2, dest: README.md }<br>- { template: gitignore.j2, dest: .gitignore }<br>- { template: gitlab_webhook.yml.j2, dest: gitlab_webhook.yml }|List of playbooks which will be generated|
 |gitlab_project|N/A|Name of gitlab project|
 |gitlab_branches|N/A|List with gitlab branches|
+|automation_hub|ToDo|Hostname of Automation Hub|
+|controller_dev|N/A|Hostname of Controller for Dev|
+|controller_pro|N/A|Hostname of Controller for Pro|
 
 
 

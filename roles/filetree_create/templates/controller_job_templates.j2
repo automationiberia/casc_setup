@@ -16,6 +16,7 @@ controller_templates:
     extra_vars:
       ansible_python_interpreter: /usr/bin/python3
       ansible_async_dir: /home/runner/.ansible_async/
+    execution_environment: "ee-casc"
 
   - name: "{{ orgs }} CasC_JobTemplates_AAP_CD_Config_Controller"
     description: "Template to deploy AAP Orgs"
@@ -36,6 +37,7 @@ controller_templates:
     extra_vars:
       ansible_python_interpreter: /usr/bin/python3
       ansible_async_dir: /home/runner/.ansible_async/
+    execution_environment: "ee-casc"
 
   - name: "{{ orgs }} CasC_JobTemplates_AAP_Drop_Diff"
     description: "Template to assure Drop Object Diff"
@@ -56,5 +58,6 @@ controller_templates:
     extra_vars:
       ansible_python_interpreter: /usr/bin/python3
       ansible_async_dir: /home/runner/.ansible_async/
+    execution_environment: "ee-casc"
 {% endraw %}
 ...
