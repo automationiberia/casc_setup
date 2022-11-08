@@ -77,12 +77,16 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
   ```
 8. Configure the webhooks for both environments: DEV and PRO.
 
- > **_NOTE:_** You can use the playbook *********** or do it manually:
+ > **_NOTE:_** You can use the playbook gitlab_webhook.yml or do it manually if you prefer how it is done:
 
- AUTOMATICALLY WITH A PLAYBOOK:
+ AUTOMATICALLY WITH A PLAYBOOK (it is needed to change <user> and <password> in the command. Also it can be used gitlab_api_token instead of gitlab_api_password in case it is used a token.):
 
   ```
-  ansible-navigator run
+  podman login {{ automation_hub }}
+
+  ansible-navigator run gitlab_webhook.yml -i inventory -l dev -e '{gitlab_action_push: true, gitlab_action_tag: false, gitlab_branch_filter: dev, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei {{ automation_hub }}/ee-casc
+
+  ansible-navigator run gitlab_webhook.yml -i inventory -l pro -e '{gitlab_action_push: false, gitlab_action_tag: true, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei {{ automation_hub }}/ee-casc
   ```
 
  MANUALLY IN DEV (only if you didn't by the playbook):

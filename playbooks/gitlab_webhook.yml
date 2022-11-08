@@ -1,5 +1,4 @@
 ---
-{%- raw %}
 - hosts: all
   connection: local
   gather_facts: no
@@ -14,5 +13,4 @@
       ansible.builtin.include_role:
         name: gitlab_setup
         tasks_from: gitlab_webhook.yml
-{% endraw %}
 ...
