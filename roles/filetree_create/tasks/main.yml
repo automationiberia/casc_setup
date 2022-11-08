@@ -20,7 +20,9 @@
     path: "{{ gitlab_project_temp_dir }}/group_vars/{{ __org_dir_structure_group_vars_item }}"
     state: directory
     mode: '0755'
-  loop: "{{ gitlab_branches }}"
+  loop:
+    - "{{ gitlab_branches }}"
+    - "all"
   loop_control:
     loop_var: __org_dir_structure_group_vars_item
 
@@ -77,3 +79,9 @@
   loop: "{{ gitlab_branches }}"
   loop_control:
     loop_var: __template_groupvars_env
+
+- name: Add gitlab_vars to all groups
+  ansible.builtin.template:
+    src: gitlab_vars.yml.j2
+    dest: "{{ gitlab_project_temp_dir }}/group_vars/all/gitlab_vars.yml"
+    mode: '0644'

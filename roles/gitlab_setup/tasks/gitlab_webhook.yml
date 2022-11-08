@@ -40,7 +40,8 @@
 - name: "Adding a project hook"
   community.general.gitlab_hook:
     api_url: "{{ gitlab_api_url }}"
-    api_token: "{{ gitlab_api_token }}"
+    api_token: "{{ gitlab_api_token | default(omit, true) }}"
+    api_password: "{{ gitlab_api_password | default(omit, true) }}"
     project: "{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}"
     hook_url: "{{ controller_webhook_url }}"
     state: present
