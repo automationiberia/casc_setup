@@ -15,7 +15,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 1. Clone the repository and create a new day-zero branch
 
   ```
-  git clone {{ gitlab_api_url | regex_replace('http://|https://','ssh@') }}/{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}.git
+  git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}/{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}.git
 
   cd {{ gitlab_project }}/
 
@@ -27,7 +27,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
   ```
   vi group_vars/dev/configure_connection_controller_credentials.yml
   vi group_vars/pro/configure_connection_controller_credentials.yml
-  ansible-vault encrypt group_vars/dev/configure_connection_controller_credentials.yml group_vars/prd/configure_connection_controller_credentials.yml
+  ansible-vault encrypt group_vars/dev/configure_connection_controller_credentials.yml group_vars/pro/configure_connection_controller_credentials.yml
   ```
 
 3. Edit credentials for day zero
@@ -40,7 +40,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
   ansible-vault encrypt orgs_vars/{{ gitlab_project }}/env/pro/controller_credentials.d/*
   ```
 
-4. Create the inventory file. Example:
+4. Check the inventory file. Example:
 
   ```
   [dev]
@@ -55,7 +55,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
   ```
   echo "my_vault_pass" > ~/.vault_password
   ln ~/.vault_password .
-  ANSIBLE_VAULT_PASSWORD_FILE=.vault_password
+  export ANSIBLE_VAULT_PASSWORD_FILE=.vault_password
   ```
 
 6. Launch ansible-navigator from CLI to setup day-zero of CasC. Example (it is needed to change the Execution Environment)
@@ -67,6 +67,46 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
   ansible-navigator run config-controller-filetree.yml -i inventory -l pro -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: pro}' -m stdout --eei {{ automation_hub }}/ee-casc
   ```
+7. Push the changes
+
+  ```
+  git status -s
+  git add -A
+  git commit -m "CasC day zero"
+  git push origin casc-dev-day0
+  ```
+8. Configure the webhooks for both environments: DEV and PRO.
+
+ > **_NOTE:_** You can use the playbook *********** or do it manually:
+
+ AUTOMATICALLY WITH A PLAYBOOK:
+
+  ```
+  ansible-navigator run
+  ```
+
+ MANUALLY IN DEV (only if you didn't by the playbook):
+
+ 1. Go to Dev Controller and open {{ gitlab_project }} CasC_AAP_Workflow
+ 2. Copy the content of "Webhook URL" and "Webhook Key"
+ 3. Go to Gitlab -> Settings -> Webhooks
+ 4. Paste the content of "Webhook URL" and "Webhook Key" in the gaps "URL" and "Secret Content"
+ 5. Select Push events and fill the gap with dev
+
+ ![pusheventdev](pusheventdev.png)
+
+ MANUALLY IN PRO (only if you didn't by the playbook):
+
+ 1. Go to PRO Controller and open {{ gitlab_project }} CasC_AAP_Workflow
+ 2. Copy the content of "Webhook URL" and "Webhook Key"
+ 3. Go to Gitlab -> Settings -> Webhooks
+ 4. Paste the content of "Webhook URL" and "Webhook Key" in the gaps "URL" and "Secret Content"
+ 5. Select Tag events and fill the gap with dev
+
+ ![pusheventdev](tageventpro.png)
+
+
+
 
 ### GitOps flow
 
