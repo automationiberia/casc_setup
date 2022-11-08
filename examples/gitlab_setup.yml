@@ -3,6 +3,9 @@
   connection: local
   gather_facts: no
   vars:
+    automation_hub: "demo-hub1-dev.testing.com"
+    controller_dev: "demo-ctr1-dev.testing.com"
+    controller_pro: "demo-ctr1-prd.testing.com"
     gitlab_api_url: https://gitlab.testing.com
     gitlab_validate_certs: false
     gitlab_api_user: aap-demo

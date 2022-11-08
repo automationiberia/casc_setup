@@ -15,14 +15,18 @@
   loop_control:
     loop_var: __org_dir_structure_parent_item
 
-- name: Create a directory if it does not exist group_vars
+- name: Create a directoryi if it does not exist all group_vars
+  ansible.builtin.file:
+    path: "{{ gitlab_project_temp_dir }}/group_vars/all"
+    state: directory
+    mode: '0755'
+
+- name: "Create a directory if it does not exist {{ __org_dir_structure_group_vars_item }} group_vars"
   ansible.builtin.file:
     path: "{{ gitlab_project_temp_dir }}/group_vars/{{ __org_dir_structure_group_vars_item }}"
     state: directory
     mode: '0755'
-  loop:
-    - "{{ gitlab_branches }}"
-    - "all"
+  loop: "{{ gitlab_branches }}"
   loop_control:
     loop_var: __org_dir_structure_group_vars_item
 
