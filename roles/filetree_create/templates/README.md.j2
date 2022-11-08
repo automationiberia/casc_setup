@@ -15,7 +15,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 1. Clone the repository and create a new day-zero branch
 
   ```
-  git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}/{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}.git
+  git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}:{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}.git
 
   cd {{ gitlab_project }}/
 
@@ -75,7 +75,12 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
   git commit -m "CasC day zero"
   git push origin casc-dev-day0
   ```
-8. Configure the webhooks for both environments: DEV and PRO.
+8. Merge changes into dev and pro
+
+   1. Go to gitlab and do a Merge Request from casc-dev-day0 to dev. Approve and merge it.
+   2. Go to gitlab and do a Merge Request from dev to pro. Approve and merge it.
+
+9. Configure the webhooks for both environments: DEV and PRO.
 
  > **_NOTE:_** You can use the playbook gitlab_webhook.yml or do it manually if you prefer how it is done:
 

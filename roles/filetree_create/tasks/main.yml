@@ -89,3 +89,13 @@
     src: gitlab_vars.yml.j2
     dest: "{{ gitlab_project_temp_dir }}/group_vars/all/gitlab_vars.yml"
     mode: '0644'
+
+- name: Upload images
+  ansible.builtin.file:
+    src: "{{  __webhook_image_event }}"
+    dest: "{{ gitlab_project_temp_dir }}/{{ __webhook_image_event }}"
+  loop:
+    - "pusheventdev.png"
+    - "tageventpro.png"
+  loop_control:
+    loop_var: __webhook_image_event
