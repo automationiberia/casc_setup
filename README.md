@@ -25,4 +25,4 @@ ansible-playbook gitlab_setup.yml --tags git-init,filetree_create,git-push,git-b
 
 Git repository is ready to launch the first CD and set the controller configured from CasC approach. As day 0, it is needed to do it from CLI to, after that, configure the pipelines, webhooks and everthing needed to have a complete CasC for the controller.
 
-Clone the created repository and follow the steps in readme:
+Clone the created repository and follow the steps in readme

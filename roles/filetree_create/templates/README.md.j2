@@ -16,9 +16,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
   ```
   git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}:{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}.git
-
   cd {{ gitlab_project }}/
-
   git checkout -b casc-dev-day0
   ```
 
@@ -58,15 +56,22 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
   export ANSIBLE_VAULT_PASSWORD_FILE=.vault_password
   ```
 
-6. Launch ansible-navigator from CLI to setup day-zero of CasC. Example (it is needed to change the Execution Environment)
+6. Launch ansible-navigator from CLI to setup day-zero of CasC. Example:
+
+ > **_NOTE:_** Execution Environment called ee-casc in the following playbooks has six needed collections (You can use a EE with this collections inside or install each collection in your workspace.):
+  - name: ansible.controller
+  - name: ansible.utils
+  - name: ansible.posix
+  - name: community.general
+  - name: redhat_cop.controller_configuration
+  - name: automationiberia.casc_setup
 
   ```
   podman login {{ automation_hub }}
-
   ansible-navigator run config-controller-filetree.yml -i inventory -l dev -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: dev}' -m stdout --eei {{ automation_hub }}/ee-casc
-
   ansible-navigator run config-controller-filetree.yml -i inventory -l pro -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: pro}' -m stdout --eei {{ automation_hub }}/ee-casc
   ```
+
 7. Push the changes
 
   ```
@@ -88,9 +93,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
   ```
   podman login {{ automation_hub }}
-
   ansible-navigator run gitlab_webhook.yml -i inventory -l dev -e '{gitlab_action_push: true, gitlab_action_tag: false, gitlab_branch_filter: dev, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei {{ automation_hub }}/ee-casc
-
   ansible-navigator run gitlab_webhook.yml -i inventory -l pro -e '{gitlab_action_push: false, gitlab_action_tag: true, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei {{ automation_hub }}/ee-casc
   ```
 
