@@ -229,7 +229,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
    ![New Job Template Pro](images/newjtpro.png "New Job Template Pro")
 
-1. Run the new Job Template at PRO <a name="runjtpro"></a>
+7. Run the new Job Template at PRO <a name="runjtpro"></a>
 
    Run the Job Template:
    ![Run the JT](images/launchjtpro.png "Run the JT")
@@ -237,7 +237,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    and check that it is failing:
    ![Job Template PRO failed](images/jtprofailed.png "Job Template PRO failed")
 
-1. Rollback the PRO environment to previously working tag
+8. Rollback the PRO environment to previously working tag
 
    To rollback the status of the controller to a previous working version, it's only needed to run the following Job Templates:
 
@@ -246,7 +246,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    * Run the Job Template `casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller` with the previous working version:
      ![Run the JT casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller](images/rollbackccv0.2.png "Run the JT casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller")
 
-1. Fix your playbook and start again from [step 3](#new_items) through [step 7](#runjtpro).
+9. Fix your playbook and start again from [step 3](#new_items) through [step 7](#runjtpro).
 
    Modify the playbook to include the following new line:
 
@@ -269,7 +269,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    ...
 {% endraw %}
    ```
-1. Run again the new Job Template at PRO <a name="runjtpro"></a>
+10. Run again the new Job Template at PRO <a name="runjtpro"></a>
 
    Run again the Job Template:
    ![Run the JT](images/launchjtpro.png "Run the JT")
