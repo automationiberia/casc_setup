@@ -1,0 +1,10 @@
+users:
+  - gitlab_user: adonisgarciac
+    email: adonis@redhat.com
+    delete_previous_repo: true
+  - gitlab_user: ivarmu
+    email: iaragone@redhat.com
+    delete_previous_repo: true
+  - gitlab_user: silvinux1
+    email: sperezto@redhat.com
+    delete_previous_repo: true

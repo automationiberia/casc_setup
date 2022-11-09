@@ -10,15 +10,6 @@ CasC (Configuration as Code)  means the posibility of define every object of Ans
 ## Steps to test the CasC approach
 ### Day-Zero from CLI
 
-   > **_NOTE:_** Execution Environment called ee-casc in the following playbooks has six needed collections (You can use a EE with this collections inside or install each collection in your workspace. If you will not use a EE, you can skip "podman login" steps.):
-
-    - name: ansible.controller
-    - name: ansible.utils
-    - name: ansible.posix
-    - name: community.general
-    - name: redhat_cop.controller_configuration
-    - name: automationiberia.casc_setup
-
 Before using CasC as a GitOps approach, it is needed to launch an initialization from CLI which it is called Day-Zero.
 
 1. Clone the repository and create a new day-zero branch
@@ -29,7 +20,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    git checkout -b casc-dev-day0
    ```
 
-1. Edit credentials to connect to the controller for day zero.
+2. Edit credentials to connect to the controller for day zero.
 
    ```
    vi group_vars/dev/configure_connection_controller_credentials.yml
@@ -37,7 +28,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    ansible-vault encrypt group_vars/dev/configure_connection_controller_credentials.yml group_vars/pro/configure_connection_controller_credentials.yml
    ```
 
-1. Edit credentials for day zero
+3. Edit credentials for day zero with credentials which was sent you by email. You should configure AH Token and Vault Password
 
    ```
    vi orgs_vars/{{ gitlab_project }}/env/dev/controller_credentials.d/controller_credentials.yml
@@ -47,7 +38,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    ansible-vault encrypt orgs_vars/{{ gitlab_project }}/env/pro/controller_credentials.d/*
    ```
 
-1. Check the inventory file. Example:
+4. Check the inventory file. Example:
 
    ```
    [dev]
@@ -57,7 +48,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    {{ controller_pro }}
    ```
 
-1. Setting vault credential file
+5. Setting vault credential file. It should be the same you configured in step 3.
 
    ```
    echo "my_vault_pass" > ~/.vault_password
@@ -65,7 +56,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    export ANSIBLE_VAULT_PASSWORD_FILE=.vault_password
    ```
 
-1. Launch ansible-navigator from CLI to setup day-zero of CasC. Example:
+6. Launch ansible-navigator from CLI to setup day-zero of CasC. Example:
 
     ```
     podman login {{ automation_hub }}
@@ -73,7 +64,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
     ansible-navigator run config-controller-filetree.yml -i inventory -l pro -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: pro}' -m stdout --eei {{ automation_hub }}/ee-casc
     ```
 
-1. Push the changes
+7. Push the changes
 
    ```
    git status -s
@@ -82,12 +73,12 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    git push origin casc-dev-day0
    ```
 
-1. Merge changes into dev and pro
+8. Merge changes into dev and pro
 
    1. Go to gitlab and do a Merge Request from casc-dev-day0 to dev. Approve and merge it.
    2. Go to gitlab and do a Merge Request from dev to pro. Approve and merge it.
 
-1. Configure the webhooks for both environments: DEV and PRO.
+9. Configure the webhooks for both environments: DEV and PRO.
 
    > **_NOTE:_** You can use the playbook gitlab_webhook.yml or do it manually if you prefer how it is done:
 
@@ -129,14 +120,14 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    cd {{ gitlab_project }}/
    ```
 
-1. Create a new branch from `dev` to introduce the new items:
+2. Create a new branch from `dev` to introduce the new items:
 
    ```
    git checkout dev
    git checkout -b add_info_job_template
    ```
 
-1. Add a new Playbook and a new Job Template <a name="new_items"></a>
+3. Add a new Playbook and a new Job Template <a name="new_items"></a>
 
    File: `new_playbook.yaml`
    ```yaml
@@ -178,7 +169,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 {% endraw %}
    ```
 
-1. Commit the changes to the new branch
+4. Commit the changes to the new branch
 
    ```
    git add -A .
@@ -186,7 +177,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    git push -u origin add_info_job_template
    ```
 
-1. Create a Merge Request to `dev` branch <a name="mrtodev"></a>
+5. Create a Merge Request to `dev` branch <a name="mrtodev"></a>
 
    * Go to Merge Requests and create a new merge request
      ![New merge request](images/mrtodev.png "New merge request")
@@ -200,51 +191,51 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    ---
 
    The following automated process has ben executed at the Ansible Automation Controller:
-   
+
    ![Look at the Ansible Automation Controller's jobs](images/devworkflowjobs.png "Look at the Ansible Automation Controller's jobs")
-   
+
    The following diagram shows the components of the workflow:
-   
+
    ![Workflow Diagram](images/worflowdiagram.png "Workflow Diagram")
-   
+
    Of course, the new Job Template has been created:
-   
+
    ![New Job Template Dev](images/newjtdev.png "New Job Template Dev")
 
-1. Pomote the `dev` branch to production (`pro` branch)
+6. Pomote the `dev` branch to production (`pro` branch)
 
    Similarly to the [step 5](#mrtodev), create a new Merge Request from the `dev` branch to the `pro` branch:
-   
+
    * Select the source branch as `dev` and `pro` as the destination one]
      ![New Merge Request Pro](images/newmrtopro.png "New Merge Request Pro")
-   
+
    * Fill in the merge request information
      ![Fill in the merge request information](images/newmrtoprostep2.png "Fill in the merge request information")
-   
+
      > :warning: **Be sure to write a title that have sense for the Merge Request**: The default value here is `dev`, that is not usefull at all!
-   
+
    When the Merge Request is already merged, the new Job Template is also created in the `pro` environment:
-   
+
    ![New Job Template Pro](images/newjtpro.png "New Job Template Pro")
 
-1. Run the new Job Template at PRO
+7. Run the new Job Template at PRO
 
    Run the Job Template:
    ![Run the JT](images/launchjtpro.png "Run the JT")
-   
+
    and check that it is failing:
    ![Job Template PRO failed](images/jtprofailed.png "Job Template PRO failed")
 
-1. Rollback the PRO environment to previously working tag
+8. Rollback the PRO environment to previously working tag
 
    To rollback the status of the controller to a previous working version, it's only needed to run the following Job Templates:
-   
+
    * Run the Job Template `casc-twitch-demo CasC_JobTemplates_AAP_Drop_Diff` with the previous working version:
      ![Run the JT casc-twitch-demo CasC_JobTemplates_AAP_Drop_Diff](images/rollbackddv0.2.png "Run the JT casc-twitch-demo CasC_JobTemplates_AAP_Drop_Diff")
    * Run the Job Template `casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller` with the previous working version:
      ![Run the JT casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller](images/rollbackccv0.2.png "Run the JT casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller")
-   
-1. Fix your playbook and start again from [step 3](#new_items).
+
+9. Fix your playbook and start again from [step 3](#new_items).
 
    Modify the playbook to include the following new line:
 

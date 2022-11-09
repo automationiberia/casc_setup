@@ -1,0 +1,33 @@
+- name: GitLab init
+  ansible.builtin.include_role:
+    name: gitlab_setup
+    tasks_from: gitlab_init.yml
+    apply:
+      tags: git-init
+  tags: git-init
+
+- name: Create dir structure
+  ansible.builtin.include_role:
+    name: filetree_create
+    apply:
+      tags: filetree_create
+  tags: filetree_create
+
+- name: GitLab push
+  ansible.builtin.include_role:
+    name: gitlab_setup
+    tasks_from: gitlab_push.yml
+    apply:
+      tags: git-push
+  tags: git-push
+
+- name: GitLab create branches
+  ansible.builtin.include_role:
+    name: gitlab_setup
+    tasks_from:  create_branch.yml
+    apply:
+      tags: git-branches
+  loop: "{{ gitlab_branches }}"
+  loop_control:
+    loop_var: __gitlab_branches_item
+  tags: git-branches

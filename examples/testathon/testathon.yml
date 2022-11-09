@@ -1,0 +1,87 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    gitlab_default_branch: pro
+    gitlab_http_protocol: https
+    gitlab_branches:
+      - pro
+      - dev
+    automation_hub: "demo-hub1-dev.testing.com"
+    controller_dev: "demo-ctr1-dev.testing.com"
+    controller_pro: "demo-ctr1-prd.testing.com"
+    gitlab_api_url: https://gitlab.com
+    gitlab_validate_certs: false
+    gitlab_api_user_mail: agarciac@redhat.com
+    gitlab_api_user: sa-casc-testathon
+    gitlab_api_token: "TOKEN_GITLAB"
+    gitlab_group: gitlab_group
+    gitlab_subgroup: gitlab_subgroup
+    gitlab_visibility: public
+    gitlab_default_branch: pro
+    gitlab_http_protocol: https
+    gitlab_branches:
+      - pro
+      - dev
+  vars_files:
+    - vars/users.yml
+    - vars/vault.yml
+
+  tasks:
+
+    - name: "Remove GitLab casc_testathon_{{ user_item.gitlab_user }} Project if it is requiered"
+      vars:
+        gitlab_project: "casc_testathon_{{ user_item.gitlab_user }}"
+      community.general.gitlab_project:
+        state: absent
+        api_url: "{{ gitlab_api_url }}"
+        validate_certs: "{{ gitlab_validate_certs }}"
+        api_token: "{{  gitlab_api_token }}"
+        name: "{{ gitlab_project }}"
+        group: "{{ gitlab_group }}/{{ gitlab_subgroup }}"
+      when: user_item.delete_previous_repo | default(false)
+      loop: "{{ users }}"
+      loop_control:
+        loop_var: user_item
+
+    - name: Apply gitlab_setup tasks
+      vars:
+        gitlab_project: "casc_testathon_{{ user_item.gitlab_user }}"
+      ansible.builtin.include_tasks:
+        file: gitlab_setup.yml
+        apply:
+          tags:
+            - git-init
+            - filetree_create
+            - git-push
+            - git-branches
+      loop: "{{ users }}"
+      loop_control:
+        loop_var: user_item
+
+    - name: Add a user to a GitLab Project
+      community.general.gitlab_project_members:
+        api_url: "{{ gitlab_api_url }}"
+        validate_certs: "{{ gitlab_validate_certs }}"
+        api_token: "{{  gitlab_api_token }}"
+        project: "casc_testathon_{{ user_item.gitlab_user }}"
+        gitlab_user: "{{ user_item.gitlab_user }}"
+        access_level: maintainer
+        state: present
+      loop: "{{ users }}"
+      loop_control:
+        loop_var: user_item
+
+    - name: Sending emails to users
+      community.general.mail:
+        host: smtp.gmail.com
+        port: 587
+        username: "{{ user_gmail }}"
+        password: "{{ pass_gmail }}"
+        to: "{{ user_item.email }}"
+        subject: CasC Testathon instructions
+        body: "Your repository in gitlab is {{ gitlab_api_url }}/{{ gitlab_group }}/{{ gitlab_subgroup }}/casc_testathon_{{ user_item.gitlab_user }}. Follow the instructions which you have in README."
+      loop: "{{ users }}"
+      loop_control:
+        loop_var: user_item
