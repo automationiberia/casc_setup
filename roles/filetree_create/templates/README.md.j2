@@ -105,7 +105,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
  4. Paste the content of "Webhook URL" and "Webhook Key" in the gaps "URL" and "Secret Content"
  5. Select Push events and fill the gap with dev
 
- ![pusheventdev](pusheventdev.png)
+ ![pusheventdev](images/pusheventdev.png)
 
  MANUALLY IN PRO (only if you didn't by the playbook):
 
@@ -115,7 +115,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
  4. Paste the content of "Webhook URL" and "Webhook Key" in the gaps "URL" and "Secret Content"
  5. Select Tag events and fill the gap with dev
 
- ![pusheventdev](tageventpro.png)
+ ![pusheventdev](images/tageventpro.png)
 
 
 
@@ -192,25 +192,25 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 5. Create a Merge Request to `dev` branch
 
 * Go to Merge Requests and create a new merge request
- ![Go to Merge Requests and create a new merge request](mrtodev.png "Go to Merge Requests and create a new merge request")
+ ![Go to Merge Requests and create a new merge request](images/mrtodev.png "Go to Merge Requests and create a new merge request")
 * Select the source branch and dev as the destination one]
- ![Select the source branch and dev as the destination one](newmrtodev.png "Select the source branch and dev as the destination one")
+ ![Select the source branch and dev as the destination one](images/newmrtodev.png "Select the source branch and dev as the destination one")
 * Fill in the merge request information
- ![Fill in the merge request information](newmrtodevstep2.png "Fill in the merge request information")
+ ![Fill in the merge request information](images/newmrtodevstep2.png "Fill in the merge request information")
 * Merge the merge request
- ![Merge the merge request](newmrtodevstep3.png "Merge the merge request")
+ ![Merge the merge request](images/newmrtodevstep3.png "Merge the merge request")
 
 The following automated process has ben executed at the Ansible Automation Controller:
 
-![Look at the Ansible Automation Controller's jobs](devworkflowjobs.png "Look at the Ansible Automation Controller's jobs")
+![Look at the Ansible Automation Controller's jobs](images/devworkflowjobs.png "Look at the Ansible Automation Controller's jobs")
 
 The following diagram shows the components of the workflow:
 
-![Workflow Diagram](worflowdiagram.png "Workflow Diagram")
+![Workflow Diagram](images/worflowdiagram.png "Workflow Diagram")
 
 Of course, the new Job Template has been created:
 
-![New Job Template Dev](newjtdev.png "New Job Template Dev")
+![New Job Template Dev](images/newjtdev.png "New Job Template Dev")
 
 6. Pomote the `dev` branch to production (`pro` branch)
 
