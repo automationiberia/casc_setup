@@ -86,8 +86,8 @@
 
 - name: Upload images
   ansible.builtin.copy:
-    src: "images/{{  __webhook_image_event }}"
-    dest: "{{ gitlab_project_temp_dir }}/images/{{ __webhook_image_event }}"
-  loop: "{{ readme_images }}"
+    src: "images/{{  __image_item }}"
+    dest: "{{ gitlab_project_temp_dir }}/images/{{ __image_item }}"
+  loop: "{{ lookup('ansible.builtin.fileglob', 'images/*') }}"
   loop_control:
-    loop_var: __webhook_image_event
+    loop_var: __image_item
