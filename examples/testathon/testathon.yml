@@ -3,11 +3,6 @@
   connection: local
   gather_facts: no
   vars:
-    gitlab_default_branch: pro
-    gitlab_http_protocol: https
-    gitlab_branches:
-      - pro
-      - dev
     automation_hub: "demo-hub1-dev.testing.com"
     controller_dev: "demo-ctr1-dev.testing.com"
     controller_pro: "demo-ctr1-prd.testing.com"
