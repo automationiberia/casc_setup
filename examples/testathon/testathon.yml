@@ -25,7 +25,7 @@
 
   tasks:
 
-    - name: "Remove GitLab casc_testathon_{{ user_item.gitlab_user }} Project if it is requiered"
+    - name: "Remove GitLab Project if it is requiered"
       vars:
         gitlab_project: "casc_testathon_{{ user_item.gitlab_user }}"
       community.general.gitlab_project:
