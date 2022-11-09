@@ -15,12 +15,6 @@
   loop_control:
     loop_var: __org_dir_structure_parent_item
 
-- name: Create a directoryi if it does not exist all group_vars
-  ansible.builtin.file:
-    path: "{{ gitlab_project_temp_dir }}/group_vars/all"
-    state: directory
-    mode: '0755'
-
 - name: "Create a directory if it does not exist {{ __org_dir_structure_group_vars_item }} group_vars"
   ansible.builtin.file:
     path: "{{ gitlab_project_temp_dir }}/group_vars/{{ __org_dir_structure_group_vars_item }}"
@@ -91,11 +85,9 @@
     mode: '0644'
 
 - name: Upload images
-  ansible.builtin.file:
-    src: "{{  __webhook_image_event }}"
-    dest: "{{ gitlab_project_temp_dir }}/{{ __webhook_image_event }}"
-  loop:
-    - "pusheventdev.png"
-    - "tageventpro.png"
+  ansible.builtin.copy:
+    src: "images/{{  __webhook_image_event }}"
+    dest: "{{ gitlab_project_temp_dir }}/images/{{ __webhook_image_event }}"
+  loop: "{{ readme_images }}"
   loop_control:
     loop_var: __webhook_image_event
