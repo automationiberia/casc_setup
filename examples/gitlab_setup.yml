@@ -8,6 +8,7 @@
     controller_pro: "demo-ctr1-prd.testing.com"
     gitlab_api_url: https://gitlab.testing.com
     gitlab_validate_certs: false
+    gitlab_api_user_mail: aap-demo@testing.com
     gitlab_api_user: aap-demo
     gitlab_api_token: "TOKEN_GITLAB"
     gitlab_group: gitlab_group

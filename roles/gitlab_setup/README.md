@@ -6,7 +6,10 @@ Create the repository, Upload the content crated, for example, by filtree_create
 Requirements
 ------------
 
-Collection community.general to configure webhooks
+### Collection Dependencies
+
+    - name: community.general
+
 
 Role Variables
 --------------
@@ -33,12 +36,6 @@ Role Variables
 |gitlab_action_push|true|gitlab_webhook.yml|Action push for the webhook (true or false). True if you want trigger webhook in a push action|
 |gitlab_action_tag|false|gitlab_webhook.yml|Action tag for the webhook (true or false). True if you want trigger webhook in a tag action|
 |gitlab_visibility|private|gitlab_init.yml|Visibility of gitlab repository|
-
-
-Dependencies
-------------
-
-N/A
 
 Example Playbook
 ----------------
