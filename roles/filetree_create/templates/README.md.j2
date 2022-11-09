@@ -139,7 +139,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
    File: `new_playbook.yaml`
    ```yaml
-{% raw %}
+{%- raw %}
    ---
    - name: "Play to show the hostname"
      hosts: all
@@ -156,7 +156,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
    File: `orgs_vars/casc-twitch-demo/env/common/controller_job_templates.d/new_job_template.yaml`
    ```yaml
-{% raw %}
+{%- raw %}
    ---
    controller_templates:
      - name: "{{ orgs }} New Job Template"
@@ -251,7 +251,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
    Updated file: `new_playbook.yaml`
    ```yaml
-{% raw %}
+{%- raw %}
    ---
    - name: "Play to show the hostname"
      hosts: all
