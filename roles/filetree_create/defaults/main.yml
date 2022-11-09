@@ -1,6 +1,24 @@
 ---
 # defaults file for filetree_create
 
+readme_images:
+  - pusheventdev.png
+  - tageventpro.png
+  - devworkflowjobs.png
+  - jtprofailed.png
+  - launchjtpro.png
+  - mrtodev.png
+  - newjtdev.png
+  - newjtpro.png
+  - newmrtodev.png
+  - newmrtodevstep2.png
+  - newmrtodevstep3.png
+  - newmrtopro.png
+  - newmrtoprostep2.png
+  - pusheventdev.png
+  - tageventpro.png
+  - workflowdiagram.png
+
 automation_hub: "<< ToDo >>"
 controller_dev: "<< ToDo >>"
 controller_pro: "<< ToDo >>"
@@ -12,6 +30,7 @@ org_dir_structure_parent:
   - { path: "collections", mode: '0755' }
   - { path: "group_vars", mode: '0755' }
   - { path: "group_vars/all", mode: '0755' }
+  - { path: "images", mode: '0755' }
   - { path: "{{ dir_orgs_vars }}/{{ gitlab_project }}", mode: '0755' }
   - { path: "{{ dir_orgs_vars }}/{{ gitlab_project }}/env", mode: '0755' }
   - { path: "{{ dir_orgs_vars }}/{{ gitlab_project }}/env/common", mode: '0755' }

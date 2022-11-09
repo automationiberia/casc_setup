@@ -14,122 +14,255 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
 1. Clone the repository and create a new day-zero branch
 
-  ```
-  git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}:{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}.git
-  cd {{ gitlab_project }}/
-  git checkout -b casc-dev-day0
-  ```
+   ```
+   git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}:{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}.git
+   cd {{ gitlab_project }}/
+   git checkout -b casc-dev-day0
+   ```
 
-2. Edit credentials to connect to the controller for day zero.
+1. Edit credentials to connect to the controller for day zero.
 
-  ```
-  vi group_vars/dev/configure_connection_controller_credentials.yml
-  vi group_vars/pro/configure_connection_controller_credentials.yml
-  ansible-vault encrypt group_vars/dev/configure_connection_controller_credentials.yml group_vars/pro/configure_connection_controller_credentials.yml
-  ```
+   ```
+   vi group_vars/dev/configure_connection_controller_credentials.yml
+   vi group_vars/pro/configure_connection_controller_credentials.yml
+   ansible-vault encrypt group_vars/dev/configure_connection_controller_credentials.yml group_vars/pro/configure_connection_controller_credentials.yml
+   ```
 
-3. Edit credentials for day zero
+1. Edit credentials for day zero
 
-  ```
-  vi orgs_vars/{{ gitlab_project }}/env/dev/controller_credentials.d/controller_credentials.yml
-  ansible-vault encrypt orgs_vars/{{ gitlab_project }}/env/dev/controller_credentials.d/*
+   ```
+   vi orgs_vars/{{ gitlab_project }}/env/dev/controller_credentials.d/controller_credentials.yml
+   ansible-vault encrypt orgs_vars/{{ gitlab_project }}/env/dev/controller_credentials.d/*
 
-  vi orgs_vars/{{ gitlab_project }}/env/pro/controller_credentials.d/controller_credentials.yml
-  ansible-vault encrypt orgs_vars/{{ gitlab_project }}/env/pro/controller_credentials.d/*
-  ```
+   vi orgs_vars/{{ gitlab_project }}/env/pro/controller_credentials.d/controller_credentials.yml
+   ansible-vault encrypt orgs_vars/{{ gitlab_project }}/env/pro/controller_credentials.d/*
+   ```
 
-4. Check the inventory file. Example:
+1. Check the inventory file. Example:
 
-  ```
-  [dev]
-  {{ controller_dev }}
+   ```
+   [dev]
+   {{ controller_dev }}
 
-  [pro]
-  {{ controller_pro }}
-  ```
+   [pro]
+   {{ controller_pro }}
+   ```
 
-5. Setting vault credential file
+1. Setting vault credential file
 
-  ```
-  echo "my_vault_pass" > ~/.vault_password
-  ln ~/.vault_password .
-  export ANSIBLE_VAULT_PASSWORD_FILE=.vault_password
-  ```
+   ```
+   echo "my_vault_pass" > ~/.vault_password
+   ln ~/.vault_password .
+   export ANSIBLE_VAULT_PASSWORD_FILE=.vault_password
+   ```
 
-6. Launch ansible-navigator from CLI to setup day-zero of CasC. Example:
+1. Launch ansible-navigator from CLI to setup day-zero of CasC. Example:
 
- > **_NOTE:_** Execution Environment called ee-casc in the following playbooks has six needed collections (You can use a EE with this collections inside or install each collection in your workspace.):
-  - name: ansible.controller
-  - name: ansible.utils
-  - name: ansible.posix
-  - name: community.general
-  - name: redhat_cop.controller_configuration
-  - name: automationiberia.casc_setup
+   > **_NOTE:_** Execution Environment called ee-casc in the following playbooks has six needed collections (You can use a EE with this collections inside or install each collection in your workspace.):
+    - name: ansible.controller
+    - name: ansible.utils
+    - name: ansible.posix
+    - name: community.general
+    - name: redhat_cop.controller_configuration
+    - name: automationiberia.casc_setup
 
-  ```
-  podman login {{ automation_hub }}
-  ansible-navigator run config-controller-filetree.yml -i inventory -l dev -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: dev}' -m stdout --eei {{ automation_hub }}/ee-casc
-  ansible-navigator run config-controller-filetree.yml -i inventory -l pro -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: pro}' -m stdout --eei {{ automation_hub }}/ee-casc
-  ```
+    ```
+    podman login {{ automation_hub }}
+    ansible-navigator run config-controller-filetree.yml -i inventory -l dev -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: dev}' -m stdout --eei {{ automation_hub }}/ee-casc
+    ansible-navigator run config-controller-filetree.yml -i inventory -l pro -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: pro}' -m stdout --eei {{ automation_hub }}/ee-casc
+    ```
 
-7. Push the changes
+1. Push the changes
 
-  ```
-  git status -s
-  git add -A
-  git commit -m "CasC day zero"
-  git push origin casc-dev-day0
-  ```
-8. Merge changes into dev and pro
+   ```
+   git status -s
+   git add -A
+   git commit -m "CasC day zero"
+   git push origin casc-dev-day0
+   ```
+
+1. Merge changes into dev and pro
 
    1. Go to gitlab and do a Merge Request from casc-dev-day0 to dev. Approve and merge it.
    2. Go to gitlab and do a Merge Request from dev to pro. Approve and merge it.
 
-9. Configure the webhooks for both environments: DEV and PRO.
+1. Configure the webhooks for both environments: DEV and PRO.
 
- > **_NOTE:_** You can use the playbook gitlab_webhook.yml or do it manually if you prefer how it is done:
+   > **_NOTE:_** You can use the playbook gitlab_webhook.yml or do it manually if you prefer how it is done:
 
- AUTOMATICALLY WITH A PLAYBOOK (it is needed to change <user> and <password> in the command. Also it can be used gitlab_api_token instead of gitlab_api_password in case it is used a token.):
+   AUTOMATICALLY WITH A PLAYBOOK (it is needed to change <user> and <password> in the command. Also it can be used gitlab_api_token instead of gitlab_api_password in case it is used a token.):
 
-  ```
-  podman login {{ automation_hub }}
-  ansible-navigator run gitlab_webhook.yml -i inventory -l dev -e '{gitlab_action_push: true, gitlab_action_tag: false, gitlab_branch_filter: dev, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei {{ automation_hub }}/ee-casc
-  ansible-navigator run gitlab_webhook.yml -i inventory -l pro -e '{gitlab_action_push: false, gitlab_action_tag: true, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei {{ automation_hub }}/ee-casc
-  ```
+   ```
+   podman login {{ automation_hub }}
+   ansible-navigator run gitlab_webhook.yml -i inventory -l dev -e '{gitlab_action_push: true, gitlab_action_tag: false, gitlab_branch_filter: dev, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei {{ automation_hub }}/ee-casc
+   ansible-navigator run gitlab_webhook.yml -i inventory -l pro -e '{gitlab_action_push: false, gitlab_action_tag: true, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei {{ automation_hub }}/ee-casc
+   ```
 
- MANUALLY IN DEV (only if you didn't by the playbook):
+   MANUALLY IN DEV (only if you didn't by the playbook):
 
- 1. Go to Dev Controller and open {{ gitlab_project }} CasC_AAP_Workflow
- 2. Copy the content of "Webhook URL" and "Webhook Key"
- 3. Go to Gitlab -> Settings -> Webhooks
- 4. Paste the content of "Webhook URL" and "Webhook Key" in the gaps "URL" and "Secret Content"
- 5. Select Push events and fill the gap with dev
+   1. Go to Dev Controller and open {{ gitlab_project }} CasC_AAP_Workflow
+   2. Copy the content of "Webhook URL" and "Webhook Key"
+   3. Go to Gitlab -> Settings -> Webhooks
+   4. Paste the content of "Webhook URL" and "Webhook Key" in the gaps "URL" and "Secret Content"
+   5. Select Push events and fill the gap with dev
 
- ![pusheventdev](pusheventdev.png)
+   ![pusheventdev](images/pusheventdev.png)
 
- MANUALLY IN PRO (only if you didn't by the playbook):
+   MANUALLY IN PRO (only if you didn't by the playbook):
 
- 1. Go to PRO Controller and open {{ gitlab_project }} CasC_AAP_Workflow
- 2. Copy the content of "Webhook URL" and "Webhook Key"
- 3. Go to Gitlab -> Settings -> Webhooks
- 4. Paste the content of "Webhook URL" and "Webhook Key" in the gaps "URL" and "Secret Content"
- 5. Select Tag events and fill the gap with dev
+   1. Go to PRO Controller and open {{ gitlab_project }} CasC_AAP_Workflow
+   2. Copy the content of "Webhook URL" and "Webhook Key"
+   3. Go to Gitlab -> Settings -> Webhooks
+   4. Paste the content of "Webhook URL" and "Webhook Key" in the gaps "URL" and "Secret Content"
+   5. Select Tag events and fill the gap with dev
 
- ![pusheventdev](tageventpro.png)
-
-
-
+   ![pusheventdev](images/tageventpro.png)
 
 ### GitOps flow
 
-1.
+1. Clone the given repository:
 
-2.
+   ```
+   git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}/{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}.git
 
-3.
+   cd {{ gitlab_project }}/
+   ```
 
-4.
+1. Create a new branch from `dev` to introduce the new items:
 
-5.
+   ```
+   git checkout dev
+   git checkout -b add_info_job_template
+   ```
 
-6.
+1. Add a new Playbook and a new Job Template <a name="new_items"></a>
+
+   File: `new_playbook.yaml`
+   ```yaml
+{% raw %}
+   ---
+   - name: "Play to show the hostname"
+     hosts: all
+     tasks:
+       - name: "Show the hostname"
+         debug:
+           msg:
+             - "This server is called (from Ansible inventory):     {{ inventory_hostname }}"
+             - "This server is called (from Execution Environment): {{ lookup('pipe', 'cat /etc/hostname') }}"
+             - "Running as user: {{ lookup('pipe', 'id') }}"
+   ...
+{% endraw %}
+   ```
+
+   File: `orgs_vars/casc-twitch-demo/env/common/controller_job_templates.d/new_job_template.yaml`
+   ```yaml
+{% raw %}
+   ---
+   controller_templates:
+     - name: "{{ orgs }} New Job Template"
+       description: "Template to show how to add a new JT"
+       organization: "{{ orgs }}"
+       project: "{{ orgs }} CasC_Data"
+       inventory: "{{ orgs }} Localhost"
+       playbook: "new_playbook.yaml"
+       job_type: run
+       fact_caching_enabled: false
+       concurrent_jobs_enabled: true
+       ask_scm_branch_on_launch: true
+       extra_vars:
+         ansible_python_interpreter: /usr/bin/python3
+         ansible_async_dir: /home/runner/.ansible_async/
+       execution_environment: "ee-casc"
+   ...
+{% endraw %}
+   ```
+
+1. Commit the changes to the new branch
+
+   ```
+   git add -A .
+   git commit -am "Add new playbook and job template to show server information"
+   git push -u origin add_info_job_template
+   ```
+
+1. Create a Merge Request to `dev` branch <a name="mrtodev"></a>
+
+   * Go to Merge Requests and create a new merge request
+     ![New merge request](images/mrtodev.png "New merge request")
+   * Select the source branch `add_info_job_template` and `dev` as the destination one]
+     ![New merge request to dev](images/newmrtodev.png "New merge request to dev")
+   * Fill in the merge request information
+     ![Fill in the merge request information](images/newmrtodevstep2.png "Fill in the merge request information")
+   * Merge the merge request
+     ![Merge the merge request](images/newmrtodevstep3.png "Merge the merge request")
+
+   ---
+
+   The following automated process has ben executed at the Ansible Automation Controller:
+   
+   ![Look at the Ansible Automation Controller's jobs](images/devworkflowjobs.png "Look at the Ansible Automation Controller's jobs")
+   
+   The following diagram shows the components of the workflow:
+   
+   ![Workflow Diagram](images/worflowdiagram.png "Workflow Diagram")
+   
+   Of course, the new Job Template has been created:
+   
+   ![New Job Template Dev](images/newjtdev.png "New Job Template Dev")
+
+1. Pomote the `dev` branch to production (`pro` branch)
+
+   Similarly to the [step 5](#mrtodev), create a new Merge Request from the `dev` branch to the `pro` branch:
+   
+   * Select the source branch as `dev` and `pro` as the destination one]
+     ![New Merge Request Pro](images/newmrtopro.png "New Merge Request Pro")
+   
+   * Fill in the merge request information
+     ![Fill in the merge request information](images/newmrtoprostep2.png "Fill in the merge request information")
+   
+     > :warning: **Be sure to write a title that have sense for the Merge Request**: The default value here is `dev`, that is not usefull at all!
+   
+   When the Merge Request is already merged, the new Job Template is also created in the `pro` environment:
+   
+   ![New Job Template Pro](images/newjtpro.png "New Job Template Pro")
+
+1. Run the new Job Template at PRO
+
+   Run the Job Template:
+   ![Run the JT](images/launchjtpro.png "Run the JT")
+   
+   and check that it is failing:
+   ![Job Template PRO failed](images/jtprofailed.png "Job Template PRO failed")
+
+1. Rollback the PRO environment to previously working tag
+
+   To rollback the status of the controller to a previous working version, it's only needed to run the following Job Templates:
+   
+   * Run the Job Template `casc-twitch-demo CasC_JobTemplates_AAP_Drop_Diff` with the previous working version:
+     ![Run the JT casc-twitch-demo CasC_JobTemplates_AAP_Drop_Diff](images/rollbackddv0.2.png "Run the JT casc-twitch-demo CasC_JobTemplates_AAP_Drop_Diff")
+   * Run the Job Template `casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller` with the previous working version:
+     ![Run the JT casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller](images/rollbackccv0.2.png "Run the JT casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller")
+   
+1. Fix your playbook and start again from [step 3](#new_items).
+
+   Modify the playbook to include the following new line:
+
+   `connection: local`
+
+   Updated file: `new_playbook.yaml`
+   ```yaml
+{% raw %}
+   ---
+   - name: "Play to show the hostname"
+     hosts: all
+     connection: local
+     tasks:
+       - name: "Show the hostname"
+         debug:
+           msg:
+             - "This server is called (from Ansible inventory):     {{ inventory_hostname }}"
+             - "This server is called (from Execution Environment): {{ lookup('pipe', 'cat /etc/hostname') }}"
+             - "Running as user: {{ lookup('pipe', 'id') }}"
+   ...
+{% endraw %}
+   ```
