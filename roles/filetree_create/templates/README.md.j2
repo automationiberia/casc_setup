@@ -205,7 +205,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
    The following diagram shows the components of the workflow:
 
-   ![Workflow Diagram](images/worflowdiagram.png "Workflow Diagram")
+   ![Workflow Diagram](images/workflowdiagram.png "Workflow Diagram")
 
    Of course, the new Job Template has been created:
 
@@ -222,12 +222,14 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
      ![Fill in the merge request information](images/newmrtoprostep2.png "Fill in the merge request information")
 
      > :warning: **Be sure to write a title that have sense for the Merge Request**: The default value here is `dev`, that is not usefull at all!
+   
+   ---
 
    When the Merge Request is already merged, the new Job Template is also created in the `pro` environment:
 
    ![New Job Template Pro](images/newjtpro.png "New Job Template Pro")
 
-7. Run the new Job Template at PRO
+7. Run the new Job Template at PRO <a name="runjtpro"></a>
 
    Run the Job Template:
    ![Run the JT](images/launchjtpro.png "Run the JT")
@@ -244,7 +246,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    * Run the Job Template `casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller` with the previous working version:
      ![Run the JT casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller](images/rollbackccv0.2.png "Run the JT casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller")
 
-9. Fix your playbook and start again from [step 3](#new_items).
+9. Fix your playbook and start again from [step 3](#new_items) through [step 7](#runjtpro).
 
    Modify the playbook to include the following new line:
 
@@ -267,3 +269,10 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    ...
 {% endraw %}
    ```
+10. Run again the new Job Template at PRO <a name="runjtpro"></a>
+
+   Run again the Job Template:
+   ![Run the JT](images/launchjtpro.png "Run the JT")
+   
+   and check that it is working fine now:
+   ![Job Template PRO failed](images/jtprosuccess.png "Job Template PRO failed")
