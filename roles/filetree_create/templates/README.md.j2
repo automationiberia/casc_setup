@@ -122,14 +122,105 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
 ### GitOps flow
 
-1.
+1. Clone the given repository:
 
-2.
+  ```
+  git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}/{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}.git
 
-3.
+  cd {{ gitlab_project }}/
+  ```
 
-4.
+2. Create a new branch from `dev` to introduce the new items:
 
-5.
+  ```
+  git checkout dev
+  git checkout -b add_info_job_template
+  ```
 
-6.
+<a name="new_items"></a>
+3. Add a new Playbook and a new Job Template
+
+ File: `new_playbook.yaml`
+ ```yaml
+{% raw %}
+ ---
+ - name: "Play to show the hostname"
+   hosts: all
+   tasks:
+     - name: "Show the hostname"
+       debug:
+         msg:
+           - "This server is called (from Ansible inventory):     {{ inventory_hostname }}"
+           - "This server is called (from Execution Environment): {{ lookup('pipe', 'cat /etc/hostname') }}"
+           - "Running as user: {{ lookup('pipe', 'id') }}"
+ ...
+{% endraw %}
+ ```
+
+ File: `orgs_vars/casc-twitch-demo/env/common/controller_job_templates.d/new_job_template.yaml`
+ ```yaml
+{% raw %}
+ ---
+ controller_templates:
+   - name: "{{ orgs }} New Job Template"
+     description: "Template to show how to add a new JT"
+     organization: "{{ orgs }}"
+     project: "{{ orgs }} CasC_Data"
+     inventory: "{{ orgs }} Localhost"
+     playbook: "new_playbook.yaml"
+     job_type: run
+     fact_caching_enabled: false
+     concurrent_jobs_enabled: true
+     ask_scm_branch_on_launch: true
+     extra_vars:
+       ansible_python_interpreter: /usr/bin/python3
+       ansible_async_dir: /home/runner/.ansible_async/
+     execution_environment: "ee-casc"
+ ...
+{% endraw %}
+ ```
+
+4. Commit the changes to the new branch
+
+ ```
+ git add -A .
+ git commit -am "Add new playbook and job template to show server information"
+ git push -u origin add_info_job_template
+ ```
+
+<a name="mrtodev"></a>
+5. Create a Merge Request to `dev` branch
+
+* Go to Merge Requests and create a new merge request
+ ![Go to Merge Requests and create a new merge request](mrtodev.png "Go to Merge Requests and create a new merge request")
+* Select the source branch and dev as the destination one]
+ ![Select the source branch and dev as the destination one](newmrtodev.png "Select the source branch and dev as the destination one")
+* Fill in the merge request information
+ ![Fill in the merge request information](newmrtodevstep2.png "Fill in the merge request information")
+* Merge the merge request
+ ![Merge the merge request](newmrtodevstep3.png "Merge the merge request")
+
+The following automated process has ben executed at the Ansible Automation Controller:
+
+![Look at the Ansible Automation Controller's jobs](devworkflowjobs.png "Look at the Ansible Automation Controller's jobs")
+
+The following diagram shows the components of the workflow:
+
+![Workflow Diagram](worflowdiagram.png "Workflow Diagram")
+
+Of course, the new Job Template has been created:
+
+![New Job Template Dev](newjtdev.png "New Job Template Dev")
+
+6. Pomote the `dev` branch to production (`pro` branch)
+
+Similarly to the [step 5](#mrtodev), create a new Merge Request from the `dev` branch to the `pro` branch:
+
+
+
+7. Run the new Job Template at PRO
+
+8. Rollback the PRO environment to previously working tag
+
+9. Fix your playbook and start again from [step 3](#new_items).
+
