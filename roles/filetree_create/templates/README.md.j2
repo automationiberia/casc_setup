@@ -10,6 +10,15 @@ CasC (Configuration as Code)  means the posibility of define every object of Ans
 ## Steps to test the CasC approach
 ### Day-Zero from CLI
 
+   > **_NOTE:_** Execution Environment called ee-casc in the following playbooks has six needed collections (You can use a EE with this collections inside or install each collection in your workspace. If you will not use a EE, you can skip "podman login" steps.):
+
+    - name: ansible.controller
+    - name: ansible.utils
+    - name: ansible.posix
+    - name: community.general
+    - name: redhat_cop.controller_configuration
+    - name: automationiberia.casc_setup
+
 Before using CasC as a GitOps approach, it is needed to launch an initialization from CLI which it is called Day-Zero.
 
 1. Clone the repository and create a new day-zero branch
@@ -57,14 +66,6 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    ```
 
 1. Launch ansible-navigator from CLI to setup day-zero of CasC. Example:
-
-   > **_NOTE:_** Execution Environment called ee-casc in the following playbooks has six needed collections (You can use a EE with this collections inside or install each collection in your workspace.):
-    - name: ansible.controller
-    - name: ansible.utils
-    - name: ansible.posix
-    - name: community.general
-    - name: redhat_cop.controller_configuration
-    - name: automationiberia.casc_setup
 
     ```
     podman login {{ automation_hub }}

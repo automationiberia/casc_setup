@@ -1,3 +1,9 @@
+- name: "Assert that all needed variables are defined"
+  assert:
+    that:
+      - gitlab_api_user is defined
+      - gitlab_api_user_mail is defined
+
 - name: Check if local changes exist in git
   command: git status
   args:
@@ -5,6 +11,11 @@
   register: git_status
 
 - block:
+    - name: Git - Config
+      command: "git config user.name {{ gitlab_api_user }}; git config user.email {{ gitlab_api_user_mail }}"
+      args:
+        chdir: "{{ gitlab_project_temp_dir }}"
+
     - name: Git - Adding
       command: "git add *"
       args:
