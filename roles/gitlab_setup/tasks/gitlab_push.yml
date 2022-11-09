@@ -11,11 +11,6 @@
   register: git_status
 
 - block:
-    - name: Git - Config
-      command: "git config user.name {{ gitlab_api_user }}; git config user.email {{ gitlab_api_user_mail }}"
-      args:
-        chdir: "{{ gitlab_project_temp_dir }}"
-
     - name: Git - Adding
       command: "git add *"
       args:
@@ -25,6 +20,11 @@
       command: git commit -m "First Commit - Basic Structure was created automatically"
       args:
         chdir: "{{ gitlab_project_temp_dir }}"
+      environment:
+        - GIT_COMMITTER_NAME: "{{ gitlab_api_user }}"
+        - GIT_COMMITTER_EMAIL: "{{ gitlab_api_user_mail }}"
+        - GIT_AUTHOR_NAME: "{{ gitlab_api_user }}"
+        - GIT_AUTHOR_EMAIL: "{{ gitlab_api_user_mail }}"
 
     - name: Git - push
       command: git push
