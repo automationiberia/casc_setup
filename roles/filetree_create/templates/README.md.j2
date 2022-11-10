@@ -24,7 +24,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 1. Clone the repository and create a new day-zero branch
 
    ```
-   git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}:{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}.git
+   git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}:{{ gitlab_group }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }}.git
    cd {{ gitlab_project }}/
    git checkout -b casc-dev-day0
    ```
@@ -124,7 +124,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 1. Clone the given repository:
 
    ```
-   git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}/{{ gitlab_group }}/{{ gitlab_subgroup }}/{{ gitlab_project }}.git
+   git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}/{{ gitlab_group }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }}.git
 
    cd {{ gitlab_project }}/
    ```
@@ -222,7 +222,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
      ![Fill in the merge request information](images/newmrtoprostep2.png "Fill in the merge request information")
 
      > :warning: **Be sure to write a title that have sense for the Merge Request**: The default value here is `dev`, that is not usefull at all!
-   
+
    ---
 
    When the Merge Request is already merged, the new Job Template is also created in the `pro` environment:
@@ -273,6 +273,6 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
    Run again the Job Template:
    ![Run the JT](images/launchjtpro.png "Run the JT")
-   
+
    and check that it is working fine now:
    ![Job Template PRO failed](images/jtprosuccess.png "Job Template PRO failed")
