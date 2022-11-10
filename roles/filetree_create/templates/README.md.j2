@@ -41,10 +41,8 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
    ```
    vi orgs_vars/{{ gitlab_project }}/env/dev/controller_credentials.d/controller_credentials.yml
-   ansible-vault encrypt orgs_vars/{{ gitlab_project }}/env/dev/controller_credentials.d/*
-
    vi orgs_vars/{{ gitlab_project }}/env/pro/controller_credentials.d/controller_credentials.yml
-   ansible-vault encrypt orgs_vars/{{ gitlab_project }}/env/pro/controller_credentials.d/*
+   ansible-vault encrypt orgs_vars/{{ gitlab_project }}/env/pro/controller_credentials.d/* orgs_vars/{{ gitlab_project }}/env/dev/controller_credentials.d/*
    ```
 
 4. Check the inventory file. Example:
@@ -62,30 +60,34 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    ```
    echo "my_vault_pass" > ~/.vault_password
    ln ~/.vault_password .
-   export ANSIBLE_VAULT_PASSWORD_FILE=.vault_password
    ```
 
 6. Launch ansible-navigator from CLI to setup day-zero of CasC. Example:
 
     ```
-    podman login {{ automation_hub }}
-    ansible-navigator run config-controller-filetree.yml -i inventory -l dev -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: dev}' -m stdout --eei {{ automation_hub }}/ee-casc
-    ansible-navigator run config-controller-filetree.yml -i inventory -l pro -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: pro}' -m stdout --eei {{ automation_hub }}/ee-casc
+    ansible-navigator run config-controller-filetree.yml -i inventory -l dev -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: dev}' -m stdout --eei quay.io/automationiberia/aap/ee-casc --vault-password-file .vault_password
+    ansible-navigator run config-controller-filetree.yml -i inventory -l pro -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: pro}' -m stdout --eei quay.io/automationiberia/aap/ee-casc --vault-password-file .vault_password
     ```
 
-7. Push the changes
+7. Push the changes and do a Merge Request from casc-dev-day0 to dev.
 
    ```
    git status -s
    git add -A
    git commit -m "CasC day zero"
-   git push origin casc-dev-day0
+   git push origin casc-dev-day0 --push-option="merge_request.create" --push-option="merge_request.target=dev"
    ```
+   Go to gitlab web interface ({{ gitlab_api_url }}:{{ gitlab_group }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }})  and approve the Merge Request.
+   ![Merge the merge request](images/newmrtodevstep3.png "Merge the merge request")
 
-8. Merge changes into dev and pro
+8. Merge changes into pro from dev
 
-   1. Go to gitlab and do a Merge Request from casc-dev-day0 to dev. Approve and merge it.
-   2. Go to gitlab and do a Merge Request from dev to pro. Approve and merge it.
+   ```
+   git checkout dev
+   git pull
+   git push origin dev --push-option="merge_request.create" --push-option="merge_request.target=pro"
+   ```
+   Go to gitlab web interface ({{ gitlab_api_url }}:{{ gitlab_group }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }})  and approve the Merge Request.
 
 9. Configure the webhooks for both environments: DEV and PRO.
 
@@ -94,9 +96,8 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    AUTOMATICALLY WITH A PLAYBOOK (it is needed to change <user> and <password> in the command. Also it can be used gitlab_api_token instead of gitlab_api_password in case it is used a token.):
 
    ```
-   podman login {{ automation_hub }}
-   ansible-navigator run gitlab_webhook.yml -i inventory -l dev -e '{gitlab_action_push: true, gitlab_action_tag: false, gitlab_branch_filter: dev, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei {{ automation_hub }}/ee-casc
-   ansible-navigator run gitlab_webhook.yml -i inventory -l pro -e '{gitlab_action_push: false, gitlab_action_tag: true, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei {{ automation_hub }}/ee-casc
+   ansible-navigator run gitlab_webhook.yml -i inventory -l dev -e '{gitlab_action_push: true, gitlab_action_tag: false, gitlab_branch_filter: dev, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei quay.io/automationiberia/aap/ee-casc
+   ansible-navigator run gitlab_webhook.yml -i inventory -l pro -e '{gitlab_action_push: false, gitlab_action_tag: true, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei quay.io/automationiberia/aap/ee-casc
    ```
 
    MANUALLY IN DEV (only if you didn't by the playbook):
@@ -124,7 +125,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 1. Clone the given repository:
 
    ```
-   git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}/{{ gitlab_group }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }}.git
+   git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}:{{ gitlab_group }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }}.git
 
    cd {{ gitlab_project }}/
    ```
