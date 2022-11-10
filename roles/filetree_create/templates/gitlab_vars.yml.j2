@@ -1,6 +1,6 @@
 gitlab_api_url: {{ gitlab_api_url }}
 gitlab_validate_certs: {{ gitlab_validate_certs }}
 gitlab_group: {{ gitlab_group }}
-gitlab_subgroup: {{ gitlab_subgroup }}
+gitlab_subgroup: {{ gitlab_subgroup | default(omit, true) }}
 gitlab_project: {{ gitlab_project }}
 workflow_job_template_name: "{{ gitlab_project }} CasC_AAP_Workflow"
