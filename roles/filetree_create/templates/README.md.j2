@@ -80,14 +80,18 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    Go to gitlab web interface ({{ gitlab_api_url }}:{{ gitlab_group }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }})  and approve the Merge Request.
    ![Merge the merge request](images/newmrtodevstep3.png "Merge the merge request")
 
-8. Merge changes into pro from dev
+8. Pomote the `dev` branch to production (`pro` branch)
 
-   ```
-   git checkout dev
-   git pull
-   git push origin dev --push-option="merge_request.create" --push-option="merge_request.target=pro"
-   ```
-   Go to gitlab web interface ({{ gitlab_api_url }}:{{ gitlab_group }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }})  and approve the Merge Request.
+   * Select the source branch as `dev` and `pro` as the destination one]
+     ![New Merge Request Pro](images/newmrtopro.png "New Merge Request Pro")
+
+   * Fill in the merge request information
+     ![Fill in the merge request information](images/newmrtoprostep2.png "Fill in the merge request information")
+
+     > :warning: **Be sure to write a title that have sense for the Merge Request**: The default value here is `dev`, that is not usefull at all!
+
+   * Approve the Merge Request.
+     ![New Merge Request Pro](images/newmrtoprostep3.png "Merge the merge request")
 
 9. Configure the webhooks for both environments: DEV and PRO.
 
@@ -96,8 +100,8 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    AUTOMATICALLY WITH A PLAYBOOK (it is needed to change <user> and <password> in the command. Also it can be used gitlab_api_token instead of gitlab_api_password in case it is used a token.):
 
    ```
-   ansible-navigator run gitlab_webhook.yml -i inventory -l dev -e '{gitlab_action_push: true, gitlab_action_tag: false, gitlab_branch_filter: dev, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei quay.io/automationiberia/aap/ee-casc
-   ansible-navigator run gitlab_webhook.yml -i inventory -l pro -e '{gitlab_action_push: false, gitlab_action_tag: true, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei quay.io/automationiberia/aap/ee-casc
+   ansible-navigator run gitlab_webhook.yml -i inventory -l dev -e '{gitlab_action_push: true, gitlab_action_tag: false, gitlab_branch_filter: dev, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei quay.io/automationiberia/aap/ee-casc --vault-password-file .vault_password
+   ansible-navigator run gitlab_webhook.yml -i inventory -l pro -e '{gitlab_action_push: false, gitlab_action_tag: true, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei quay.io/automationiberia/aap/ee-casc --vault-password-file .vault_password
    ```
 
    MANUALLY IN DEV (only if you didn't by the playbook):
