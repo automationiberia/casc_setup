@@ -34,7 +34,7 @@
         validate_certs: "{{ gitlab_validate_certs }}"
         api_token: "{{  gitlab_api_token }}"
         name: "{{ gitlab_project }}"
-        group: "{{ gitlab_group }}/{{ gitlab_subgroup }}"
+        group: "{{ gitlab_group }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}"
       when: user_item.delete_previous_repo | default(false)
       loop: "{{ users }}"
       loop_control:
