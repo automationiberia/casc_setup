@@ -5,7 +5,7 @@ controller_templates:
     description: "Template to attend AAP CasC webhook"
     organization: "{{ orgs }}"
     project: "{{ orgs }} CasC_Data"
-    inventory: "{{ orgs }} Localhost"
+    inventory: "superadmin Controller"
     playbook: "cd-gitlab-webhook-trigger.yml"
     job_type: run
     fact_caching_enabled: false
@@ -22,7 +22,7 @@ controller_templates:
     description: "Template to deploy AAP Orgs"
     organization: "{{ orgs }}"
     project: "{{ orgs }} CasC_Data"
-    inventory: "{{ orgs }} Localhost"
+    inventory: "superadmin Controller"
     playbook: "config-controller-filetree.yml"
     job_type: run
     fact_caching_enabled: false
@@ -43,7 +43,7 @@ controller_templates:
     description: "Template to assure Drop Object Diff"
     organization: "{{ orgs }}"
     project: "{{ orgs }} CasC_Data"
-    inventory: "{{ orgs }} Localhost"
+    inventory: "superadmin Controller"
     playbook: "drop_diff.yml"
     job_type: run
     fact_caching_enabled: false
