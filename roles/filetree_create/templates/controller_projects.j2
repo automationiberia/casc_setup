@@ -6,9 +6,8 @@ controller_projects:
     organization: "{{ orgs }}"
     scm_type: git
 {% endraw %}
-    scm_url: "{{ gitlab_project_creation.project.ssh_url_to_repo }}"
+    scm_url: "{{ gitlab_project_creation.project.http_url_to_repo }}"
 {%- raw %}
-    scm_credential: "{{ orgs }} {{ env }} Gitlab Credential"
     scm_branch: "{{ gitlab_scm_branch | default(env) }}"
     scm_clean: false
     scm_delete_on_update: false
