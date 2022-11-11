@@ -20,6 +20,8 @@
     initialize_with_readme: true
     default_branch:  "{{ gitlab_default_branch }}"
     visibility: "{{ gitlab_visibility }}"
+    squash_option: "{{ gitlab_squash_option | default('never') }}"
+    only_allow_merge_if_pipeline_succeeds: "{{ gitlab_only_allow_merge_if_pipeline_succeeds | default(true) }}"
   register: gitlab_project_creation
 
 - name: Set git clone repo
