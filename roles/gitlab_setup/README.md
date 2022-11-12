@@ -100,7 +100,7 @@ $ cat gitlab_setup.yml
       tags: git-branches
 
 
-$ cat gitlab_webhook.yml 
+$ cat gitlab_webhook.yml
 ---
 - hosts: all
   connection: local
@@ -120,7 +120,7 @@ $ cat gitlab_webhook.yml
     gitlab_action_push: true
     gitlab_action_tag: false
     gitlab_branch_filter: dev-casc
-    workflow_job_template_name: "{{ gitlab_project }} CasC_AAP_Workflow"
+    workflow_job_template_name: "{{ gitlab_project }} WF_CasC_Ctrl"
 
   tasks:
     - name: GitLab Webhook

@@ -1,12 +1,28 @@
 ---
 {%- raw %}
+---
 stages:
+  - lint
   - release
+yamllint:
+  stage: lint
+  image: quay.io/automationiberia/aap/ee-casc:latest
+  tags:
+    - casc
+    - controller-group
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+      when: never
+    - if: '$CI_COMMIT_BRANCH'
+  script:
+    - yamllint -c ./.yamllint.yml .
 release_job:
   stage: release
-  tags:
-  - controller-group
   image: registry.gitlab.com/gitlab-org/release-cli:latest
+  tags:
+    - casc
+    - controller-group
   rules:
     - if: $CI_COMMIT_TAG
       when: never                                  # Do not run this job when a tag is created manually
