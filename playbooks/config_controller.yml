@@ -1,5 +1,4 @@
 ---
-{%- raw %}
 - hosts: all
   connection: local
   gather_facts: false
@@ -65,5 +64,5 @@
         validate_certs: "{{ controller_validate_certs }}"
         status_code: 204
       when: controller_oauthtoken_url is defined
-{% endraw %}
+# ansible-navigator run config-controller.yml -i inventory -l dev -m stdout --eei quay.io/automationiberia/aap/ee-casc -e '{orgs: superadmin, dir_orgs_vars: orgs_vars, env: dev, casc_gitlab_scm_branch: testathon}' --tags projects,inventories,roles,hosts --vault-password-file .vault_password
 ...

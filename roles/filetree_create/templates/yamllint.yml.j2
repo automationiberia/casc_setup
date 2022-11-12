@@ -1,0 +1,43 @@
+---
+{%- raw %}
+extends: default
+
+ignore: |
+  changelogs
+  group_vars/*/configure_connection_controller_credentials.yml
+  group_vars/*/vault
+  orgs_vars/*/env/*/controller_credentials.d/
+  orgs_vars/*/env/*/controller_settings.d/authentication/controller_settings_ldap.yml
+
+yaml-files:
+  - '*.yaml'
+  - '*.yml'
+
+rules:
+  # 80 chars should be enough, but don't fail if a line is longer
+  line-length: disable
+  comments:
+    require-starting-space: true
+    ignore-shebangs: true
+    min-spaces-from-content: 2
+  commas:
+    max-spaces-before: 0
+    min-spaces-after: 1
+    max-spaces-after: 1
+  colons:
+    max-spaces-before: 0
+    max-spaces-after: -1
+  document-end: {present: true}
+  indentation:
+    level: error
+    indent-sequences: consistent
+  truthy:
+    level: error
+    allowed-values:
+      - 'True'
+      - 'False'
+      - 'true'
+      - 'false'
+      - 'on'
+{% endraw -%}
+...
