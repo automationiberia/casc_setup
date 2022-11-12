@@ -1,6 +1,73 @@
 ---
 {%- raw %}
-- name: Include Gitlab Webhook Trigger Playbook from a collection AutomationIberia CasC_Setup
-  ansible.builtin.import_playbook: automationiberia.casc_setup.cd_gitlab_webhook_trigger.yml
+- hosts: all
+  connection: local
+  gather_facts: false
+  tasks:
+    - name: "Get the modified files over the dirs from all the received commits"
+      set_fact:
+        __env: "{{ awx_webhook_payload.ref.split('/')[2] if awx_webhook_payload.ref.split('/')[1] == 'heads' else  awx_webhook_payload.project.default_branch }}"
+        __casc_gitlab_scm_branch: "{{ awx_webhook_payload.ref.split('/')[2] }}"
+        __list_of_dirs: "{{ ((awx_webhook_payload.commits | map(attribute='added') | list) +
+                           (awx_webhook_payload.commits | map(attribute='modified') | list) +
+                           (awx_webhook_payload.commits | map(attribute='removed') | list))
+                       | flatten }}"
+    # https://regex101.com/r/0SgpFn/1
+    - set_fact:
+        regexpression: "/([^/]*)/env/(common|{{ __env }})/controller_(.*).d/"
+
+    - name: "Get the Organization and the tags to run the CasC"
+      set_fact:
+        org_dirs_dict: "{{ (org_dirs_dict | default({})) | combine({input_var[0]: (((org_dirs_dict[input_var[0]] | default([])) + [input_var[1]] + ( ['projects','schedules'] if awx_webhook_payload.ref.split('/')[1] == 'tags' else [''] ) ) | unique | reject('match', '^$') ) }) }}"
+      vars:
+        input_var: "{{ input_var_item | regex_search(regexpression, '\\1', '\\3') }}"
+      loop: "{{ __list_of_dirs }}"
+      loop_control:
+        loop_var: input_var_item
+      when: input_var | type_debug is match('list')
+
+    - name: Configure Controller Job Launch | Launch launch_jobs Drop Diff (Delete)
+      include_role:
+        name: redhat_cop.controller_configuration.job_launch
+      vars:
+        controller_launch_jobs:
+          - name: "{{ __drop_diff_org_tags_item.key }} CasC_JobTemplates_AAP_Drop_Diff"
+            scm_branch: "{{ __casc_gitlab_scm_branch }}"
+            extra_vars:
+              orgs: "{{ __drop_diff_org_tags_item.key }}"
+              dir_orgs_vars: 'orgs_vars'
+              ansible_python_interpreter: "/usr/bin/python3"
+              env: "{{ __env }}"
+              casc_gitlab_scm_branch: "{{ __casc_gitlab_scm_branch }}"
+            tags: "{{ __drop_diff_org_tags_item.value }}"
+            wait: true
+            verbosity: 0
+      with_dict: "{{ org_dirs_dict }}"
+      loop_control:
+        loop_var: __drop_diff_org_tags_item
+      when: org_dirs_dict is defined
+
+    - name: Configure Controller Job Launch | Launch launch_jobs creation
+      include_role:
+        name: redhat_cop.controller_configuration.job_launch
+      vars:
+        controller_launch_jobs:
+          - name: "{{ __config_controller_org_tags_item.key }} CasC_JobTemplates_AAP_CD_Config_Controller"
+            scm_branch: "{{ __casc_gitlab_scm_branch }}"
+            extra_vars:
+              orgs: "{{ __config_controller_org_tags_item.key }}"
+              dir_orgs_vars: 'orgs_vars'
+              ansible_python_interpreter: "/usr/bin/python3"
+              env: "{{ __env }}"
+              casc_gitlab_scm_branch: "{{ __casc_gitlab_scm_branch }}"
+            tags: "{{ __config_controller_org_tags_item.value }}"
+            wait: true
+            verbosity: 0
+      with_dict: "{{ org_dirs_dict }}"
+      loop_control:
+        loop_var: __config_controller_org_tags_item
+      when: org_dirs_dict is defined
+
+# ansible-playbook ci-webhook-trigger.yml -e @orgs_vars/env/demo-dev/configure_connection_controller_credentials.yml --vault-password-file ./.vault_pass.txt -e @ci-webhook-variables.yml -e '{orgs: Global}'
 {% endraw %}
 ...
