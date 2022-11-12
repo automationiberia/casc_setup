@@ -2,7 +2,7 @@
 {%- raw %}
 - hosts: all
   connection: local
-  gather_facts: no
+  gather_facts: false
   vars:
     controller_username: "{{ vault_controller_username | default(lookup('env', 'CONTROLLER_USERNAME')) }}"
     controller_password: "{{ vault_controller_password | default(lookup('env', 'CONTROLLER_PASSWORD')) }}"
