@@ -20,7 +20,7 @@ Install this collection and configure a playbook to use it (there is an example 
 Launch the playbook to init git and create the initial basic content. To to that, use tags git-init, filetree_create, git-push and git-branches:
 
 ```
-ansible-playbook gitlab_setup.yml --tags git-init,filetree_create,git-push,git-branches
+$ ansible-navigator run gitlab_setup.yml  -m stdout --eei quay.io/automationiberia/aap/ee-casc --tags git-init,filetree_create,git-push,git-branches
 ```
 
 Git repository is ready to launch the first CD and set the controller configured from CasC approach. As day 0, it is needed to do it from CLI to, after that, configure the pipelines, webhooks and everthing needed to have a complete CasC for the controller.
