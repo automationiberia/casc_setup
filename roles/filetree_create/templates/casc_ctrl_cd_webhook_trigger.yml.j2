@@ -31,7 +31,7 @@
         name: redhat_cop.controller_configuration.job_launch
       vars:
         controller_launch_jobs:
-          - name: "{{ __drop_diff_org_tags_item.key }} CasC_JobTemplates_AAP_Drop_Diff"
+          - name: "{{ __drop_diff_org_tags_item.key }} JT_CasC_Ctrl_Drop_Diff"
             scm_branch: "{{ __casc_gitlab_scm_branch }}"
             extra_vars:
               orgs: "{{ __drop_diff_org_tags_item.key }}"
@@ -52,7 +52,7 @@
         name: redhat_cop.controller_configuration.job_launch
       vars:
         controller_launch_jobs:
-          - name: "{{ __config_controller_org_tags_item.key }} CasC_JobTemplates_AAP_CD_Config_Controller"
+          - name: "{{ __config_controller_org_tags_item.key }} JT_CasC_Ctrl_Config"
             scm_branch: "{{ __casc_gitlab_scm_branch }}"
             extra_vars:
               orgs: "{{ __config_controller_org_tags_item.key }}"
