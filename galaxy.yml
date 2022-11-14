@@ -8,7 +8,7 @@ namespace: automationiberia
 name: casc_setup
 
 # The version of the collection. Must be compatible with semantic versioning
-version: 1.0.2
+version: 1.0.3
 
 # The path to the Markdown (.md) readme file. This path is relative to the root of the collection
 readme: README.md
@@ -60,6 +60,7 @@ issues: http://example.com/issue/tracker
 # uses 'fnmatch' to match the files or directories. Some directories and files like 'galaxy.yml', '*.pyc', '*.retry',
 # and '.git' are always filtered
 build_ignore:
-  - galaxy.yml
+  - 'galaxy.yml'
+  - '*.tar.gz'
 
 
