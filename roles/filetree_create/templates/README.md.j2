@@ -69,7 +69,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    ansible-navigator run casc_ctrl_config.yml -i inventory -l pro -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: pro}' -m stdout --eei quay.io/automationiberia/aap/ee-casc --vault-password-file .vault_password
    ```
 
-7. Push the changes and do a Merge Request from casc-dev-day0 to dev.
+7. Push the changes
 
    ```
    git status -s
@@ -77,21 +77,19 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    git commit -m "CasC day zero"
    git push origin casc-dev-day0
    ```
-   Go to gitlab web interface ({{ gitlab_api_url }}:{{ gitlab_group }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }})  and approve the Merge Request.
-   ![Merge the merge request](images/newmrtodevstep3.png "Merge the merge request")
 
 8. Pomote the `casc-dev-day0` branch to dev (`dev` branch)
 
    * Select the source branch as `casc-dev-day0` and `dev` as the destination one]
-     ![New Merge Request Dev](images/newmrtodev.png "New Merge Request Dev")
+     ![New Merge Request Dev](images/newmrtodev-0.png "New Merge Request Dev")
 
    * Fill in the merge request information
-     ![Fill in the merge request information](images/newmrtodevstep2.png "Fill in the merge request information")
+     ![Fill in the merge request information](images/newmrtodev-0-step2.png "Fill in the merge request information")
 
      > :warning: **Be sure to write a title that have sense for the Merge Request**: The default value here is `dev`, that is not usefull at all!
 
    * Approve the Merge Request.
-     ![New Merge Request Pro](images/newmrtodevstep3.png "Merge the merge request")
+     ![New Merge Request Pro](images/newmrtodev-0-step3.png "Merge the merge request")
 
 9. Pomote the `dev` branch to pro (`pro` branch)
 
@@ -108,34 +106,34 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
 10. Configure the webhooks for both environments: DEV and PRO.
 
-   > **_NOTE:_** You can use the playbook gitlab_webhook.yml or do it manually if you prefer how it is done:
+    > **_NOTE:_** You can use the playbook gitlab_webhook.yml or do it manually if you prefer how it is done:
 
-   AUTOMATICALLY WITH A PLAYBOOK (it is needed to change <user> and <password> in the command. Also it can be used gitlab_api_token instead of gitlab_api_password in case it is used a token.):
+    AUTOMATICALLY WITH A PLAYBOOK (it is needed to change <user> and <token> in the command. Also it can be used gitlab_api_password instead of gitlab_api_token in case it is used a password.):
 
-   ```
-   ansible-navigator run gitlab_webhook.yml -i inventory -l dev -e '{gitlab_action_push: true, gitlab_action_tag: false, gitlab_branch_filter: dev, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei quay.io/automationiberia/aap/ee-casc --vault-password-file .vault_password
-   ansible-navigator run gitlab_webhook.yml -i inventory -l pro -e '{gitlab_action_push: false, gitlab_action_tag: true, gitlab_api_user: <user>, gitlab_api_password: <password>}' -m stdout --eei quay.io/automationiberia/aap/ee-casc --vault-password-file .vault_password
-   ```
+    ```
+    ansible-navigator run gitlab_webhook.yml -i inventory -l dev -e '{gitlab_action_push: true, gitlab_action_tag: false, gitlab_branch_filter: dev, gitlab_api_user: <user>, gitlab_api_token: <token>}' -m stdout --eei quay.io/automationiberia/aap/ee-casc --vault-password-file .vault_password
+    ansible-navigator run gitlab_webhook.yml -i inventory -l pro -e '{gitlab_action_push: false, gitlab_action_tag: true, gitlab_api_user: <user>, gitlab_api_token: <token>}' -m stdout --eei quay.io/automationiberia/aap/ee-casc --vault-password-file .vault_password
+    ```
 
-   MANUALLY IN DEV (only if you didn't by the playbook):
+    MANUALLY IN DEV (only if you didn't by the playbook):
 
-   1. Go to Dev Controller and open {{ gitlab_project }} CasC_AAP_Workflow
-   2. Copy the content of "Webhook URL" and "Webhook Key"
-   3. Go to Gitlab -> Settings -> Webhooks
-   4. Paste the content of "Webhook URL" and "Webhook Key" in the gaps "URL" and "Secret Content"
-   5. Select Push events and fill the gap with dev
+    1. Go to Dev Controller and open {{ gitlab_project }} CasC_AAP_Workflow
+    2. Copy the content of "Webhook URL" and "Webhook Key"
+    3. Go to Gitlab -> Settings -> Webhooks
+    4. Paste the content of "Webhook URL" and "Webhook Key" in the gaps "URL" and "Secret Content"
+    5. Select Push events and fill the gap with dev
 
-   ![pusheventdev](images/pusheventdev.png)
+    ![pusheventdev](images/pusheventdev.png)
 
-   MANUALLY IN PRO (only if you didn't by the playbook):
+    MANUALLY IN PRO (only if you didn't by the playbook):
 
-   1. Go to PRO Controller and open {{ gitlab_project }} CasC_AAP_Workflow
-   2. Copy the content of "Webhook URL" and "Webhook Key"
-   3. Go to Gitlab -> Settings -> Webhooks
-   4. Paste the content of "Webhook URL" and "Webhook Key" in the gaps "URL" and "Secret Content"
-   5. Select Tag events and fill the gap with dev
+    1. Go to PRO Controller and open {{ gitlab_project }} CasC_AAP_Workflow
+    2. Copy the content of "Webhook URL" and "Webhook Key"
+    3. Go to Gitlab -> Settings -> Webhooks
+    4. Paste the content of "Webhook URL" and "Webhook Key" in the gaps "URL" and "Secret Content"
+    5. Select Tag events and fill the gap with dev
 
-   ![pusheventdev](images/tageventpro.png)
+    ![pusheventdev](images/tageventpro.png)
 
 ### GitOps flow
 
@@ -156,13 +154,33 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
 3. Add a new Playbook and a new Job Template
 
-   File: `new_playbook.yaml`
+   File: `new_playbook1.yaml`
    ```
 {%- raw %}
-   cat > new_playbook.yaml <<EOF
+   cat > new_playbook1.yaml <<EOF
    ---
    - name: "Play to show the hostname"
      hosts: all
+     tasks:
+       - name: "Show the hostname"
+         debug:
+           msg:
+             - "This server is called (from Ansible inventory):     {{ inventory_hostname }}"
+             - "This server is called (from Execution Environment): {{ lookup('pipe', 'cat /etc/hostname') }}"
+             - "Running as user: {{ lookup('pipe', 'id') }}"
+   ...
+   EOF
+{% endraw %}
+   ```
+
+   File: `new_playbook2.yaml`
+   ```
+{%- raw %}
+   cat > new_playbook2.yaml <<EOF
+   ---
+   - name: "Play to show the hostname"
+     hosts: all
+     connection: local
      tasks:
        - name: "Show the hostname"
          debug:
@@ -185,8 +203,8 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
        description: "Template to show how to add a new JT"
        organization: "{{ orgs }}"
        project: "{{ orgs }} CasC_Data"
-       inventory: "superadmin Controller"
-       playbook: "new_playbook.yaml"
+       inventory: "{{ orgs }} Localhost"
+       playbook: "new_playbook1.yaml"
        job_type: run
        fact_caching_enabled: false
        concurrent_jobs_enabled: true
@@ -212,7 +230,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
    * Go to Merge Requests and create a new merge request
      ![New merge request](images/mrtodev.png "New merge request")
-   * Select the source branch `add_info_job_template` and `dev` as the destination one]
+   * Select the source branch `add_info_job_template` and `dev` as the destination one
      ![New merge request to dev](images/newmrtodev.png "New merge request to dev")
    * Fill in the merge request information
      ![Fill in the merge request information](images/newmrtodevstep2.png "Fill in the merge request information")
@@ -233,7 +251,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
    ![New Job Template Dev](images/newjtdev.png "New Job Template Dev")
 
-6. Pomote the `dev` branch to production (`pro` branch)
+6. Pomote the `dev` branch to production (`pro` branch) <a name="mrdevtopro"></a>
 
    Similarly to the [step 5](#mrtodev), create a new Merge Request from the `dev` branch to the `pro` branch:
 
@@ -276,24 +294,29 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    git checkout -b fix_playbook
    ```
 
-   Modify the playbook to include the following new line:
+   Modify the Job Template to use the correct playbook:
 
-   `connection: local`
+   `playbook: "new_playbook2.yaml"`
 
-   Updated file: `new_playbook.yaml`
+   Updated file: `orgs_vars/{{ gitlab_project }}/env/common/controller_job_templates.d/new_job_template.yaml`
    ```yaml
 {%- raw %}
    ---
-   - name: "Play to show the hostname"
-     hosts: all
-     connection: local
-     tasks:
-       - name: "Show the hostname"
-         debug:
-           msg:
-             - "This server is called (from Ansible inventory):     {{ inventory_hostname }}"
-             - "This server is called (from Execution Environment): {{ lookup('pipe', 'cat /etc/hostname') }}"
-             - "Running as user: {{ lookup('pipe', 'id') }}"
+   controller_templates:
+     - name: "{{ orgs }} New Job Template"
+       description: "Template to show how to add a new JT"
+       organization: "{{ orgs }}"
+       project: "{{ orgs }} CasC_Data"
+       inventory: "{{ orgs }} Localhost"
+       playbook: "new_playbook2.yaml"
+       job_type: run
+       fact_caching_enabled: false
+       concurrent_jobs_enabled: true
+       ask_scm_branch_on_launch: true
+       extra_vars:
+         ansible_python_interpreter: /usr/bin/python3
+         ansible_async_dir: /home/runner/.ansible_async/
+       execution_environment: "ee-casc"
    ...
 {% endraw %}
    ```
@@ -307,7 +330,11 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
    Create a Merge Request to `dev` branch:
 
+   * ![Create New Merge Request from `fix_playbook` to Dev](images/newmrtodev-fix_playbook.png "Create New Merge Request from `fix_playbook` to Dev")
+   * ![New Merge Request from `fix_playbook` to Dev](images/newmrtodev-fix_playbook-step2.png "New Merge Request from `fix_playbook` to Dev")
+   * ![Merge the Request](images/newmrtodev-fix_playbook-step3.png "Merge the Request")
 
+   Repeat the steps to create a new Merge Request from `dev` to `pro`, as described at [step 6](#mrdevtopro)
 
 10. Run again the new Job Template at PRO <a name="runjtpro"></a>
 
