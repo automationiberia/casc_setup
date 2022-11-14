@@ -75,12 +75,25 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    git status -s
    git add -A
    git commit -m "CasC day zero"
-   git push origin casc-dev-day0 --push-option="merge_request.create" --push-option="merge_request.target=dev"
+   git push origin casc-dev-day0"
    ```
    Go to gitlab web interface ({{ gitlab_api_url }}:{{ gitlab_group }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }})  and approve the Merge Request.
    ![Merge the merge request](images/newmrtodevstep3.png "Merge the merge request")
 
-8. Pomote the `dev` branch to production (`pro` branch)
+8. Pomote the `casc-dev-day0` branch to dev (`dev` branch)
+
+   * Select the source branch as `casc-dev-day0` and `dev` as the destination one]
+     ![New Merge Request Dev](images/newmrtodev.png "New Merge Request Dev")
+
+   * Fill in the merge request information
+     ![Fill in the merge request information](images/newmrtodevstep2.png "Fill in the merge request information")
+
+     > :warning: **Be sure to write a title that have sense for the Merge Request**: The default value here is `dev`, that is not usefull at all!
+
+   * Approve the Merge Request.
+     ![New Merge Request Pro](images/newmrtodevstep3.png "Merge the merge request")
+
+9. Pomote the `dev` branch to pro (`pro` branch)
 
    * Select the source branch as `dev` and `pro` as the destination one]
      ![New Merge Request Pro](images/newmrtopro.png "New Merge Request Pro")
@@ -93,7 +106,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    * Approve the Merge Request.
      ![New Merge Request Pro](images/newmrtoprostep3.png "Merge the merge request")
 
-9. Configure the webhooks for both environments: DEV and PRO.
+10. Configure the webhooks for both environments: DEV and PRO.
 
    > **_NOTE:_** You can use the playbook gitlab_webhook.yml or do it manually if you prefer how it is done:
 
