@@ -39,10 +39,11 @@ org_dir_structure_env:
   - { path: "controller_settings.d", mode: '0755', controller_list: controller_settings }
 
 other_template_list:
-  - { template: cd-gitlab-webhook-trigger.yml.j2, dest:  cd-gitlab-webhook-trigger.yml }
-  - { template: config-controller-filetree.yml.j2, dest: config-controller-filetree.yml }
-  - { template: drop_diff.yml.j2, dest: drop_diff.yml }
+  - { template: casc_ctrl_config.yml.j2, dest:  casc_ctrl_config.yml }
+  - { template: casc_ctrl_cd_webhook_trigger.yml.j2, dest: casc_ctrl_cd_webhook_trigger.yml }
+  - { template: casc_ctrl_drop_diff.yml.j2, dest: casc_ctrl_drop_diff.yml }
   - { template: gitlab-ci.yml.j2, dest: .gitlab-ci.yml }
+  - { template: yamllint.yml.j2, dest: .yamllint.yml }
   - { template: requirements.yml.j2, dest: collections/requirements.yml }
   - { template: README.md.j2, dest: README.md }
   - { template: gitignore.j2, dest: .gitignore }

@@ -2,8 +2,8 @@
 controller_schedules:
 {%- raw %}
   - name: "{{ orgs }} CasC_Objects_Cleanup"
-    description: CasC_Objects_Cleanup
-    unified_job_template: "{{ orgs }} CasC_JobTemplates_AAP_Drop_Diff"
+    description: CasC_Ojbects_Cleanup
+    unified_job_template: "{{ orgs }} JT_CasC_Ctrl_Drop_Diff"
     rrule: DTSTART;TZID=Europe/Madrid:20220127T163000 RRULE:INTERVAL=1;FREQ=DAILY
     enabled: false
     extra_data:
@@ -12,11 +12,12 @@ controller_schedules:
       env: "{{ env }}"
       dir_orgs_vars: orgs_vars
       orgs: "{{ orgs }}"
+      casc_gitlab_scm_branch: "{{ casc_gitlab_scm_branch }}"
     organization: "{{ orgs }}"
 
   - name: "{{ orgs }} CasC_Objects_Creation"
-    description: CasC_Objects_Creation
-    unified_job_template: "{{ orgs }} CasC_JobTemplates_AAP_CD_Config_Controller"
+    description: CasC_Ojbects_Cleanup
+    unified_job_template: "{{ orgs }} JT_CasC_Ctrl_Config"
     rrule: DTSTART;TZID=Europe/Madrid:20220127T000000 RRULE:INTERVAL=1;FREQ=DAILY
     enabled: false
     extra_data:
@@ -25,6 +26,7 @@ controller_schedules:
       env: "{{ env }}"
       dir_orgs_vars: orgs_vars
       orgs: "{{ orgs }}"
+      casc_gitlab_scm_branch: "{{ casc_gitlab_scm_branch }}"
     organization: "{{ orgs }}"
 {% endraw %}
 ...

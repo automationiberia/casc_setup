@@ -31,14 +31,14 @@
         name: redhat_cop.controller_configuration.job_launch
       vars:
         controller_launch_jobs:
-          - name: "{{ __drop_diff_org_tags_item.key }} CasC_JobTemplates_AAP_Drop_Diff"
+          - name: "{{ __drop_diff_org_tags_item.key }} JT_CasC_Ctrl_Drop_Diff"
             scm_branch: "{{ __casc_gitlab_scm_branch }}"
             extra_vars:
               orgs: "{{ __drop_diff_org_tags_item.key }}"
               dir_orgs_vars: 'orgs_vars'
               ansible_python_interpreter: "/usr/bin/python3"
               env: "{{ __env }}"
-              gitlab_scm_branch: "{{ __casc_gitlab_scm_branch }}"
+              casc_gitlab_scm_branch: "{{ __casc_gitlab_scm_branch }}"
             tags: "{{ __drop_diff_org_tags_item.value }}"
             wait: true
             verbosity: 0
@@ -52,14 +52,14 @@
         name: redhat_cop.controller_configuration.job_launch
       vars:
         controller_launch_jobs:
-          - name: "{{ __config_controller_org_tags_item.key }} CasC_JobTemplates_AAP_CD_Config_Controller"
+          - name: "{{ __config_controller_org_tags_item.key }} JT_CasC_Ctrl_Config"
             scm_branch: "{{ __casc_gitlab_scm_branch }}"
             extra_vars:
               orgs: "{{ __config_controller_org_tags_item.key }}"
               dir_orgs_vars: 'orgs_vars'
               ansible_python_interpreter: "/usr/bin/python3"
               env: "{{ __env }}"
-              gitlab_scm_branch: "{{ __casc_gitlab_scm_branch }}"
+              casc_gitlab_scm_branch: "{{ __casc_gitlab_scm_branch }}"
             tags: "{{ __config_controller_org_tags_item.value }}"
             wait: true
             verbosity: 0

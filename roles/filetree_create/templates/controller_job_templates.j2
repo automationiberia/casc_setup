@@ -1,16 +1,16 @@
 ---
 controller_templates:
 {%- raw %}
-  - name: "{{ orgs }} CasC_JobTemplates_AAP_CD_Webhook"
-    description: "Template to attend AAP CasC webhook"
+  - name: "{{ orgs }} JT_CasC_Ctrl_CD_Webhook_Trigger"
+    description: "Template to attend Controller CasC webhook"
     organization: "{{ orgs }}"
     project: "{{ orgs }} CasC_Data"
     inventory: "superadmin Controller"
-    playbook: "cd-gitlab-webhook-trigger.yml"
+    playbook: "casc_ctrl_cd_webhook_trigger.yml"
     job_type: run
     fact_caching_enabled: false
     credentials:
-      - "{{ orgs }} {{ env }} AAP Credentials"
+      - "{{ orgs }} {{ env }} AAP Credential"
     concurrent_jobs_enabled: true
     ask_scm_branch_on_launch: true
     extra_vars:
@@ -18,17 +18,17 @@ controller_templates:
       ansible_async_dir: /home/runner/.ansible_async/
     execution_environment: "ee-casc"
 
-  - name: "{{ orgs }} CasC_JobTemplates_AAP_CD_Config_Controller"
-    description: "Template to deploy AAP Orgs"
+  - name: "{{ orgs }} JT_CasC_Ctrl_Config"
+    description: "Template to deploy Controller objects in Org {{ orgs }}"
     organization: "{{ orgs }}"
     project: "{{ orgs }} CasC_Data"
     inventory: "superadmin Controller"
-    playbook: "config-controller-filetree.yml"
+    playbook: "casc_config_ctrl.yml"
     job_type: run
     fact_caching_enabled: false
     credentials:
-      - "{{ orgs }} {{ env }} AAP Credentials"
-      - "{{ orgs }} {{ env }} Vault Credentials"
+      - "{{ orgs }} {{ env }} AAP Credential"
+      - "{{ orgs }} {{ env }} Vault Credential"
     concurrent_jobs_enabled: true
     ask_scm_branch_on_launch: true
     ask_tags_on_launch: true
@@ -39,17 +39,17 @@ controller_templates:
       ansible_async_dir: /home/runner/.ansible_async/
     execution_environment: "ee-casc"
 
-  - name: "{{ orgs }} CasC_JobTemplates_AAP_Drop_Diff"
-    description: "Template to assure Drop Object Diff"
+  - name: "{{ orgs }} JT_CasC_Ctrl_Drop_Diff"
+    description: "Template to assure no difference between API and repository"
     organization: "{{ orgs }}"
     project: "{{ orgs }} CasC_Data"
     inventory: "superadmin Controller"
-    playbook: "drop_diff.yml"
+    playbook: "casc_ctrl_drop_diff.yml"
     job_type: run
     fact_caching_enabled: false
     credentials:
-      - "{{ orgs }} {{ env }} AAP Credentials"
-      - "{{ orgs }} {{ env }} Vault Credentials"
+      - "{{ orgs }} {{ env }} AAP Credential"
+      - "{{ orgs }} {{ env }} Vault Credential"
     concurrent_jobs_enabled: true
     ask_scm_branch_on_launch: true
     ask_tags_on_launch: true
@@ -59,5 +59,6 @@ controller_templates:
       ansible_python_interpreter: /usr/bin/python3
       ansible_async_dir: /home/runner/.ansible_async/
     execution_environment: "ee-casc"
+
 {% endraw %}
 ...

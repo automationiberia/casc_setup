@@ -11,6 +11,6 @@
   tasks:
     - name: GitLab Webhook
       ansible.builtin.include_role:
-        name: gitlab_setup
+        name: automationiberia.casc_setup.gitlab_setup
         tasks_from: gitlab_webhook.yml
 ...

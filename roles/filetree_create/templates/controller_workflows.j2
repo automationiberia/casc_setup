@@ -1,27 +1,28 @@
 ---
 controller_workflows:
 {%- raw %}
-  - name: "{{ orgs }} CasC_AAP_Workflow"
+  - name: "{{ orgs }} WF_CasC_Ctrl"
     state: present
     description: "workflow for CasC on AAP"
     survey_enabled: false
     ask_variables_on_launch: true
     allow_simultaneous: true
+    scm_branch: "{{ env }}"
     webhook_service: "gitlab"
     organization: "{{ orgs }}"
     simplified_workflow_nodes:
       - identifier: "LAUNCH_CI_{{ orgs }}"
-        workflow_job_template: "{{ orgs }} CasC_AAP_Workflow"
-        unified_job_template: "{{ orgs }} CasC_JobTemplates_AAP_CD_Webhook"
+        workflow_job_template: "{{ orgs }} WF_CasC_Ctrl"
+        unified_job_template: "{{ orgs }} JT_CasC_Ctrl_CD_Webhook_Trigger"
         job_type: run
         organization: "{{ orgs }}"
-        workflow: "{{ orgs }} CasC_AAP_Workflow"
+        workflow: "{{ orgs }} WF_CasC_Ctrl"
 
       - identifier: "PROJECT_SYNC_{{ orgs }}"
-        workflow_job_template: "{{ orgs }} CasC_AAP_Workflow"
+        workflow_job_template: "{{ orgs }} WF_CasC_Ctrl"
         unified_job_template: "{{ orgs }} CasC_Data"
         organization: "{{ orgs }}"
-        workflow: "{{ orgs }} CasC_AAP_Workflow"
+        workflow: "{{ orgs }} WF_CasC_Ctrl"
         success_nodes:
           - "LAUNCH_CI_{{ orgs }}"
     notification_templates_started: []
