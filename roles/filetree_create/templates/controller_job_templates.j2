@@ -5,7 +5,7 @@ controller_templates:
     description: "Template to attend Controller CasC webhook"
     organization: "{{ orgs }}"
     project: "{{ orgs }} CasC_Data"
-    inventory: "{{ orgs }} Localhost"
+    inventory: "superadmin Controller"
     playbook: "casc_ctrl_cd_webhook_trigger.yml"
     job_type: run
     fact_caching_enabled: false
@@ -22,8 +22,8 @@ controller_templates:
     description: "Template to deploy Controller objects in Org {{ orgs }}"
     organization: "{{ orgs }}"
     project: "{{ orgs }} CasC_Data"
-    inventory: "{{ orgs }} Localhost"
-    playbook: "casc_config_ctrl.yml"
+    inventory: "superadmin Controller"
+    playbook: "casc_ctrl_config.yml"
     job_type: run
     fact_caching_enabled: false
     credentials:
@@ -43,7 +43,7 @@ controller_templates:
     description: "Template to assure no difference between API and repository"
     organization: "{{ orgs }}"
     project: "{{ orgs }} CasC_Data"
-    inventory: "{{ orgs }} Localhost"
+    inventory: "superadmin Controller"
     playbook: "casc_ctrl_drop_diff.yml"
     job_type: run
     fact_caching_enabled: false
