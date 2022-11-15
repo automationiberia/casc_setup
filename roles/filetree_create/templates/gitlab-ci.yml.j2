@@ -3,19 +3,19 @@
 stages:
 #  - lint
   - release
-yamllint:
-  stage: lint
-  image: quay.io/automationiberia/aap/ee-casc:latest
-  tags:
-    - casc
-    - controller-group
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
-      when: never
-    - if: '$CI_COMMIT_BRANCH'
-  script:
-    - yamllint -c ./.yamllint.yml .
+#yamllint:
+#  stage: lint
+#  image: quay.io/automationiberia/aap/ee-casc:latest
+#  tags:
+#    - casc
+#    - controller-group
+#  rules:
+#    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+#    - if: '$CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS'
+#      when: never
+#    - if: '$CI_COMMIT_BRANCH'
+#  script:
+#    - yamllint -c ./.yamllint.yml .
 release_job:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:latest
