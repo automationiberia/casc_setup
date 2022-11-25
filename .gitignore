@@ -1,1 +1,6 @@
 *.tar.gz
+.vault_password
+ansible-navigator.log
+*.json
+gitlab_setup.yml
+
