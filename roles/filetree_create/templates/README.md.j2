@@ -20,7 +20,14 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    git checkout -b casc-dev-day0
    ```
 
-2. Edit credentials to connect to the controller for day zero.
+2. Add initial Production release version number
+   ```
+   cat <<EOF >> VERSION
+   0.1
+   EOF
+   ```
+
+3. Edit credentials to connect to the controller for day zero.
 
    ```
    vi group_vars/dev/configure_connection_controller_credentials.yml
@@ -28,7 +35,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    ansible-vault encrypt group_vars/dev/configure_connection_controller_credentials.yml group_vars/pro/configure_connection_controller_credentials.yml
    ```
 
-3. Edit credential objects for day zero.
+4. Edit credential objects for day zero.
 
    Automation Hub Token: b7d2b62539f8cd6d42f035985cc0e039078a988f
    Vault Password: Your choice.
@@ -48,7 +55,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    ansible-vault encrypt orgs_vars/{{ gitlab_project }}/env/pro/controller_credentials.d/* orgs_vars/{{ gitlab_project }}/env/dev/controller_credentials.d/*
    ```
 
-4. Check the inventory file. Example:
+5. Check the inventory file. Example:
 
    ```
    [dev]
@@ -58,21 +65,21 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    {{ controller_pro }}
    ```
 
-5. Setting vault credential file. It should be the same you configured in step 3.
+6. Setting vault credential file. It should be the same you configured in step 3.
 
    ```
    echo "my_vault_pass" > ~/.vault_password
    ln ~/.vault_password .
    ```
 
-6. Launch ansible-navigator from CLI to setup day-zero of CasC. Example:
+7. Launch ansible-navigator from CLI to setup day-zero of CasC. Example:
 
    ```
    ansible-navigator run casc_ctrl_config.yml -i inventory -l dev -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: dev}' -m stdout --eei quay.io/automationiberia/aap/ee-casc --vault-password-file .vault_password
    ansible-navigator run casc_ctrl_config.yml -i inventory -l pro -e '{orgs: {{ gitlab_project }}, dir_orgs_vars: orgs_vars, env: pro}' -m stdout --eei quay.io/automationiberia/aap/ee-casc --vault-password-file .vault_password
    ```
 
-7. Push the changes
+8. Push the changes
 
    ```
    git status -s
@@ -81,7 +88,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    git push origin casc-dev-day0
    ```
 
-8. Pomote the `casc-dev-day0` branch to dev (`dev` branch)
+9. Pomote the `casc-dev-day0` branch to dev (`dev` branch)
 
    * Select the source branch as `casc-dev-day0` and `dev` as the destination one]
      ![New Merge Request Dev](images/newmrtodev-0.png "New Merge Request Dev")
@@ -92,7 +99,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    * Approve the Merge Request.
      ![New Merge Request Pro](images/newmrtodev-0-step3.png "Merge the merge request")
 
-9. Promote the `dev` branch to pro (`pro` branch)
+10. Promote the `dev` branch to pro (`pro` branch)
 
    * Select the source branch as `dev` and `pro` as the destination one]
      ![New Merge Request Pro](images/newmrtopro.png "New Merge Request Pro")
@@ -105,7 +112,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    * Approve the Merge Request.
      ![New Merge Request Pro](images/newmrtoprostep3.png "Merge the merge request")
 
-10. Configure the webhooks for both environments: DEV and PRO.
+11. Configure the webhooks for both environments: DEV and PRO.
 
    * Launch de JT {{ orgs }} JT_Gitlab_Webhook_Creation in {{ controller_dev }}
 
@@ -197,7 +204,14 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 {% endraw %}
    ```
 
-4. Commit the changes to the new branch
+4. Modify Production release version number file
+   ```
+   cat <<EOF >> VERSION
+   0.2
+   EOF
+   ```
+
+5. Commit the changes to the new branch
 
    ```
    git add -A .
@@ -205,7 +219,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    git push -u origin add_info_job_template
    ```
 
-5. Create a Merge Request to `dev` branch <a name="mrtodev"></a>
+6. Create a Merge Request to `dev` branch <a name="mrtodev"></a>
 
    * Go to Merge Requests and create a new merge request
      ![New merge request](images/mrtodev.png "New merge request")
@@ -233,7 +247,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
    ![New Job Template Dev](images/newjtdev.png "New Job Template Dev")
 
-6. Pomote the `dev` branch to production (`pro` branch) <a name="mrdevtopro"></a>
+7. Pomote the `dev` branch to production (`pro` branch) <a name="mrdevtopro"></a>
 
    Similarly to the [step 5](#mrtodev), create a new Merge Request from the `dev` branch to the `pro` branch:
 
@@ -251,7 +265,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
    ![New Job Template Pro](images/newjtpro.png "New Job Template Pro")
 
-7. Run the new Job Template at PRO <a name="runjtpro"></a>
+8. Run the new Job Template at PRO <a name="runjtpro"></a>
 
    Run the Job Template:
    ![Run the JT](images/launchjtpro.png "Run the JT")
@@ -259,7 +273,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    and check that it is failing:
    ![Job Template PRO failed](images/jtprofailed.png "Job Template PRO failed")
 
-8. Rollback the PRO environment to previously working tag
+9. Rollback the PRO environment to previously working tag
 
    To rollback the status of the controller to a previous working version, it's only needed to run the following Job Templates:
 
@@ -268,7 +282,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    * Run the Job Template `casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller` with the previous working version:
      ![Run the JT casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller](images/rollbackccv0.2.png "Run the JT casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller")
 
-9. Fix your playbook
+10. Fix your playbook
 
    ```
    git checkout dev
@@ -301,6 +315,13 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
        execution_environment: "ee-casc"
    ...
 {% endraw %}
+   ```
+
+  Modify Production release version number file
+   ```
+   cat <<EOF >> VERSION
+   0.3
+   EOF
    ```
 
    Commit and push your changes:
