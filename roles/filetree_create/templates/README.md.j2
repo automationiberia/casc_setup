@@ -28,7 +28,19 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
    ansible-vault encrypt group_vars/dev/configure_connection_controller_credentials.yml group_vars/pro/configure_connection_controller_credentials.yml
    ```
 
-3. Edit credentials for day zero with credentials which was sent you by email. You should configure AH Token and Vault Password
+3. Edit credentials object for day zero.
+   
+   Automation Hub Token: b7d2b62539f8cd6d42f035985cc0e039078a988f
+   Vault Password: Your choice.
+   Gitlab Credential: Your SSH KEY for gitlab.
+   GitLab API Token: Generate a Token for your user:
+     1. Go to gitlab.com web and login with your user.
+     2. Right top, click profile icon and "Edit Profile"
+     3. Click Access Tokens
+     4. Select next day for Expiration Day and CasC-testathon as Token name.
+     5. Select scope Api 
+     6. Save generated token.
+
 
    ```
    vi orgs_vars/{{ gitlab_project }}/env/dev/controller_credentials.d/controller_credentials.yml
@@ -95,34 +107,12 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
 10. Configure the webhooks for both environments: DEV and PRO.
 
-    > **_NOTE:_** You can use the playbook gitlab_webhook.yml or do it manually if you prefer how it is done:
+   * Launch de JT {{ orgs }} JT_Gitlab_Webhook_Creation in {{ controller_dev }}
 
-    AUTOMATICALLY WITH A PLAYBOOK (it is needed to change <user> and <token> in the command. Also it can be used gitlab_api_password instead of gitlab_api_token in case it is used a password.):
+   * Launch de JT {{ orgs }} JT_Gitlab_Webhook_Creation in {{ controller_pro }}
 
-    ```
-    ansible-navigator run gitlab_webhook.yml -i inventory -l dev -e '{gitlab_action_push: true, gitlab_action_tag: false, gitlab_branch_filter: dev, gitlab_api_user: <user>, gitlab_api_token: <token>}' -m stdout --eei quay.io/automationiberia/aap/ee-casc --vault-password-file .vault_password
-    ansible-navigator run gitlab_webhook.yml -i inventory -l pro -e '{gitlab_action_push: false, gitlab_action_tag: true, gitlab_api_user: <user>, gitlab_api_token: <token>}' -m stdout --eei quay.io/automationiberia/aap/ee-casc --vault-password-file .vault_password
-    ```
+   Webhooks should be created in the {{ orgs }} gitlab project. Check them.
 
-    MANUALLY IN DEV (only if you didn't by the playbook):
-
-    1. Go to Dev Controller and open {{ gitlab_project }} CasC_AAP_Workflow
-    2. Copy the content of "Webhook URL" and "Webhook Key"
-    3. Go to Gitlab -> Settings -> Webhooks
-    4. Paste the content of "Webhook URL" and "Webhook Key" in the gaps "URL" and "Secret Content"
-    5. Select Push events and fill the gap with dev
-
-    ![pusheventdev](images/pusheventdev.png)
-
-    MANUALLY IN PRO (only if you didn't by the playbook):
-
-    1. Go to PRO Controller and open {{ gitlab_project }} CasC_AAP_Workflow
-    2. Copy the content of "Webhook URL" and "Webhook Key"
-    3. Go to Gitlab -> Settings -> Webhooks
-    4. Paste the content of "Webhook URL" and "Webhook Key" in the gaps "URL" and "Secret Content"
-    5. Select Tag events and fill the gap with dev
-
-    ![pusheventdev](images/tageventpro.png)
 
 ### GitOps flow
 
