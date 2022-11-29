@@ -6,19 +6,24 @@
   tasks:
     - name: "Get the modified files over the dirs from all the received commits"
       set_fact:
+        __CONTROLLER_CLUSTER_ID: "{{ lookup('ansible.builtin.env', 'CONTROLLER_CLUSTER_ID') }}"
         __env: "{{ awx_webhook_payload.ref.split('/')[2] if awx_webhook_payload.ref.split('/')[1] == 'heads' else  awx_webhook_payload.project.default_branch }}"
         __casc_gitlab_scm_branch: "{{ awx_webhook_payload.ref.split('/')[2] }}"
         __list_of_dirs: "{{ ((awx_webhook_payload.commits | map(attribute='added') | list) +
                            (awx_webhook_payload.commits | map(attribute='modified') | list) +
                            (awx_webhook_payload.commits | map(attribute='removed') | list))
                        | flatten }}"
-    # https://regex101.com/r/0SgpFn/1
+    - set_fact:
+        __controller_location: "{{ __CONTROLLER_CLUSTER_ID }}"
+        __schedule_is_enabled:  "{{ true if __CONTROLLER_CLUSTER_ID == controller_inventory_site_is_active else false }}"
+
     - set_fact:
         regexpression: "/([^/]*)/env/(common|{{ __env }})/controller_(.*).d/"
 
     - name: "Get the Organization and the tags to run the CasC"
       set_fact:
-        org_dirs_dict: "{{ (org_dirs_dict | default({})) | combine({input_var[0]: (((org_dirs_dict[input_var[0]] | default([])) + [input_var[1]] + ( ['projects','schedules'] if awx_webhook_payload.ref.split('/')[1] == 'tags' else [''] ) ) | unique | reject('match', '^$') ) }) }}"
+        # org_dirs_dict: "{{ (org_dirs_dict | default({})) | combine({input_var[0]: (((org_dirs_dict[input_var[0]] | default([])) + [input_var[1]] + ( ['projects','schedules'] if awx_webhook_payload.ref.split('/')[1] == 'tags' else [''] ) ) | unique | reject('match', '^$') ) }) }}"
+        org_dirs_dict: "{{ (org_dirs_dict | default({})) | combine({input_var[0]: (((org_dirs_dict[input_var[0]] | default([])) + ( ['all'] if awx_webhook_payload.ref.split('/')[1] == 'tags' else [input_var[1]])) | unique | reject('match', '^$'))})}}"
       vars:
         input_var: "{{ input_var_item | regex_search(regexpression, '\\1', '\\3') }}"
       loop: "{{ __list_of_dirs }}"
@@ -39,6 +44,8 @@
               ansible_python_interpreter: "/usr/bin/python3"
               env: "{{ __env }}"
               casc_gitlab_scm_branch: "{{ __casc_gitlab_scm_branch }}"
+              controller_location: "{{ __controller_location }}"
+              schedule_is_enabled: "{{ __schedule_is_enabled }}"
             tags: "{{ __drop_diff_org_tags_item.value }}"
             wait: true
             verbosity: 0
@@ -60,6 +67,8 @@
               ansible_python_interpreter: "/usr/bin/python3"
               env: "{{ __env }}"
               casc_gitlab_scm_branch: "{{ __casc_gitlab_scm_branch }}"
+              controller_location: "{{ __controller_location }}"
+              schedule_is_enabled: "{{ __schedule_is_enabled }}"
             tags: "{{ __config_controller_org_tags_item.value }}"
             wait: true
             verbosity: 0
@@ -67,7 +76,5 @@
       loop_control:
         loop_var: __config_controller_org_tags_item
       when: org_dirs_dict is defined
-
-# ansible-playbook ci-webhook-trigger.yml -e @orgs_vars/env/demo-dev/configure_connection_controller_credentials.yml --vault-password-file ./.vault_pass.txt -e @ci-webhook-variables.yml -e '{orgs: Global}'
 {% endraw %}
 ...

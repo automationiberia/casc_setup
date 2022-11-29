@@ -64,7 +64,7 @@ controller_templates:
     description: "Template to create webhook in the gitlab project"
     organization: "{{ orgs }}"
     project: "{{ orgs }} CasC_Data"
-    inventory: "{{ orgs }} Controller"
+    inventory: "{{ orgs }} Localhost"
     playbook: "gitlab_webhook.yml"
     job_type: run
     fact_caching_enabled: false
@@ -156,7 +156,7 @@ controller_templates:
           required: true
           type: text
           variable: "workflow_job_template_name"
-          default: {{ orgs }} WF_CasC_Ctrl
+          default: "{{ orgs }} WF_CasC_Ctrl"
           min: 0
           max: 60
           new_question: true

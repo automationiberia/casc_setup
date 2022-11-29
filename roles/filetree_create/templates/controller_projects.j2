@@ -10,7 +10,6 @@ controller_projects:
 {%- raw %}
     scm_credential: "{{ orgs }} {{ env }} Gitlab Credential"
     scm_branch: "{{ casc_gitlab_scm_branch | default(env) }}"
-    scm_credential: "{{ orgs }} {{ env }} Gitlab Credential"
     scm_clean: false
     scm_delete_on_update: false
     scm_update_on_launch: false
