@@ -6,17 +6,13 @@
   tasks:
     - name: "Get the modified files over the dirs from all the received commits"
       set_fact:
-        __CONTROLLER_CLUSTER_ID: "{{ lookup('ansible.builtin.env', 'CONTROLLER_CLUSTER_ID') }}"
         __env: "{{ awx_webhook_payload.ref.split('/')[2] if awx_webhook_payload.ref.split('/')[1] == 'heads' else  awx_webhook_payload.project.default_branch }}"
         __casc_gitlab_scm_branch: "{{ awx_webhook_payload.ref.split('/')[2] }}"
         __list_of_dirs: "{{ ((awx_webhook_payload.commits | map(attribute='added') | list) +
                            (awx_webhook_payload.commits | map(attribute='modified') | list) +
                            (awx_webhook_payload.commits | map(attribute='removed') | list))
                        | flatten }}"
-    - set_fact:
-        __controller_location: "{{ __CONTROLLER_CLUSTER_ID }}"
-        __schedule_is_enabled:  "{{ true if __CONTROLLER_CLUSTER_ID == controller_inventory_site_is_active else false }}"
-
+    # https://regex101.com/r/0SgpFn/1
     - set_fact:
         regexpression: "/([^/]*)/env/(common|{{ __env }})/controller_(.*).d/"
 
@@ -44,8 +40,6 @@
               ansible_python_interpreter: "/usr/bin/python3"
               env: "{{ __env }}"
               casc_gitlab_scm_branch: "{{ __casc_gitlab_scm_branch }}"
-              controller_location: "{{ __controller_location }}"
-              schedule_is_enabled: "{{ __schedule_is_enabled }}"
             tags: "{{ __drop_diff_org_tags_item.value }}"
             wait: true
             verbosity: 0
@@ -67,8 +61,6 @@
               ansible_python_interpreter: "/usr/bin/python3"
               env: "{{ __env }}"
               casc_gitlab_scm_branch: "{{ __casc_gitlab_scm_branch }}"
-              controller_location: "{{ __controller_location }}"
-              schedule_is_enabled: "{{ __schedule_is_enabled }}"
             tags: "{{ __config_controller_org_tags_item.value }}"
             wait: true
             verbosity: 0
