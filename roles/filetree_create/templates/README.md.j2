@@ -22,7 +22,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
 2. Add initial Production release version number
    ```
-   cat <<EOF >> VERSION
+   cat <<EOF > VERSION
    0.1
    EOF
    ```
@@ -37,9 +37,9 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
 4. Edit credential objects for day zero.
 
-   Automation Hub Token: b7d2b62539f8cd6d42f035985cc0e039078a988f
-   Vault Password: Your choice.
-   Gitlab Credential: Your SSH KEY for gitlab.
+   Automation Hub Token: b7d2b62539f8cd6d42f035985cc0e039078a988f\
+   Vault Password: Your choice.\
+   Gitlab Credential: Your SSH KEY for gitlab.\
    GitLab API Token: Generate a Token for your user:
      1. Go to gitlab.com web and login with your user.
      2. Right top, click profile icon and "Edit Profile"
@@ -194,7 +194,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
        job_type: run
        fact_caching_enabled: false
        concurrent_jobs_enabled: true
-       ask_scm_branch_on_launch: true
+       ask_scm_branch_on_launch: false
        extra_vars:
          ansible_python_interpreter: /usr/bin/python3
          ansible_async_dir: /home/runner/.ansible_async/
@@ -206,7 +206,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
 4. Modify Production release version number file
    ```
-   cat <<EOF >> VERSION
+   cat <<EOF > VERSION
    0.2
    EOF
    ```
@@ -277,10 +277,10 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
    To rollback the status of the controller to a previous working version, it's only needed to run the following Job Templates:
 
-   * Run the Job Template `casc-twitch-demo CasC_JobTemplates_AAP_Drop_Diff` with the previous working version:
-     ![Run the JT casc-twitch-demo CasC_JobTemplates_AAP_Drop_Diff](images/rollbackddv0.2.png "Run the JT casc-twitch-demo CasC_JobTemplates_AAP_Drop_Diff")
-   * Run the Job Template `casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller` with the previous working version:
-     ![Run the JT casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller](images/rollbackccv0.2.png "Run the JT casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller")
+   * Run the Job Template `{{ gitlab_project }} CasC_Ctrl_Drop_Diff` with the previous working version:
+     ![Run the JT {{ gitlab_project }} CasC_Ctrl_Drop_Diff](images/rollbackddv0.2.png "Run the JT {{ gitlab_project }} CasC_Ctrl_Drop_Diff")
+   * Run the Job Template `{{ gitlab_project }} JT_CasC_Ctrl_Config` with the previous working version:
+     ![Run the JT {{ gitlab_project }} JT_CasC_Ctrl_Config](images/rollbackccv0.2.png "Run the JT {{ gitlab_project }} JT_CasC_Ctrl_Config")
 
 10. Fix your playbook
 
@@ -319,7 +319,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
   Modify Production release version number file
    ```
-   cat <<EOF >> VERSION
+   cat <<EOF > VERSION
    0.3
    EOF
    ```

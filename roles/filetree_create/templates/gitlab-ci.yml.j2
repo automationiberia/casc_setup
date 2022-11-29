@@ -61,8 +61,8 @@ auto-release-master:
   script:
     - echo "Release $TAG"
   release:
-    name: "Release $TAG"
-    description: "Created using the release-cli $EXTRA_DESCRIPTION"
+    name: "v$TAG"
+    description: "Created using the release-cli v$TAG"
     tag_name: v$TAG
     ref: $CI_COMMIT_SHA
 {% endraw %}
