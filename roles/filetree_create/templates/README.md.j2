@@ -282,10 +282,10 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 
    To rollback the status of the controller to a previous working version, it's only needed to run the following Job Templates:
 
-   * Run the Job Template `casc-twitch-demo CasC_JobTemplates_AAP_Drop_Diff` with the previous working version:
-     ![Run the JT casc-twitch-demo CasC_JobTemplates_AAP_Drop_Diff](images/rollbackddv0.2.png "Run the JT casc-twitch-demo CasC_JobTemplates_AAP_Drop_Diff")
-   * Run the Job Template `casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller` with the previous working version:
-     ![Run the JT casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller](images/rollbackccv0.2.png "Run the JT casc-twitch-demo CasC_JobTemplates_AAP_CD_Config_Controller")
+   * Run the Job Template `{{ gitlab_project }} JT_CasC_Ctrl_Drop_Diff` with the previous working version:
+     ![Run the JT {{ gitlab_project }} JT_CasC_Ctrl_Drop_Diff](images/rollbackddv0.2.png "Run the JT {{ gitlab_project }} JT_CasC_Ctrl_Drop_Diff")
+   * Run the Job Template `{{ gitlab_project }} JT_CasC_Ctrl_Config` with the previous working version:
+     ![Run the JT {{ gitlab_project }} JT_CasC_Ctrl_Config](images/rollbackccv0.2.png "Run the JT {{ gitlab_project }} JT_CasC_Ctrl_Config")
 
 9. Fix your playbook
 
