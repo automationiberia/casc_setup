@@ -1,7 +1,13 @@
 ---
 controller_organizations:
+{% if gitlab_api_url is defined %}
   - name: "{{ gitlab_project }}"
     description: "Organization {{ gitlab_project }}"
+{% elif github_api_url is defined %}
+  - name: "{{ github_repository }}"
+    description: "Organization {{ github_repository }}"
+{% endif %}
+
 {%- raw %}
     galaxy_credentials:
       - "{{ orgs }} {{ env }} Automation Hub Community Repository"

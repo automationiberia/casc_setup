@@ -6,6 +6,7 @@ controller_dev: "<< ToDo >>"
 controller_pro: "<< ToDo >>"
 
 gitlab_project_temp_dir: /tmp/gitlab-clone
+github_project_temp_dir: /tmp/gitlab-clone
 dir_orgs_vars: orgs_vars
 
 org_dir_structure_parent:

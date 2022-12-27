@@ -1,2 +1,25 @@
 ---
 # tasks file for github_setup
+- name: GitHub Init
+  ansible.builtin.include_tasks: github_init.yml
+  args:
+    apply:
+      tags: git-init
+  tags:
+    - git-init
+
+- name: GitHub Push
+  ansible.builtin.include_tasks: github_push.yml
+  args:
+    apply:
+      tags: git-push
+  tags:
+    - git-push
+
+- name: Setup github Webhook
+  ansible.builtin.include_tasks: github_webhook.yml
+  args:
+    apply:
+      tags: git-hook
+  tags:
+    - git-hook

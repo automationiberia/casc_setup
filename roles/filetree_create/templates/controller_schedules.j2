@@ -12,7 +12,7 @@ controller_schedules:
       env: "{{ env }}"
       dir_orgs_vars: orgs_vars
       orgs: "{{ orgs }}"
-      casc_gitlab_scm_branch: "{{ casc_gitlab_scm_branch | default(env) }}"
+      casc_git_scm_branch: "{{ casc_git_scm_branch | default(env) }}"
     organization: "{{ orgs }}"
 
   - name: "{{ orgs }} CasC_Objects_Creation"
@@ -26,7 +26,7 @@ controller_schedules:
       env: "{{ env }}"
       dir_orgs_vars: orgs_vars
       orgs: "{{ orgs }}"
-      casc_gitlab_scm_branch: "{{ casc_gitlab_scm_branch | default(env) }}"
+      casc_git_scm_branch: "{{ casc_git_scm_branch | default(env) }}"
     organization: "{{ orgs }}"
 {% endraw %}
 ...

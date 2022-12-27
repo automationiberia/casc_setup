@@ -8,7 +8,11 @@ controller_workflows:
     ask_variables_on_launch: true
     allow_simultaneous: true
     scm_branch: "{{ env }}"
+{% if gitlab_api_url is defined %}
     webhook_service: "gitlab"
+{% elif github_api_url is defined %}
+    webhook_service: "github"
+{% endif %}
     organization: "{{ orgs }}"
     simplified_workflow_nodes:
       - identifier: "LAUNCH_CI_{{ orgs }}"

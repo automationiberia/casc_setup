@@ -6,11 +6,14 @@ controller_projects:
     organization: "{{ orgs }}"
     scm_type: git
 {% endraw %}
+{% if gitlab_api_url is defined %}
     scm_url: "{{ gitlab_project_creation.project.ssh_url_to_repo }}"
+{% elif github_api_url is defined %}
+    scm_url: "{{ github_repo_creation.repo.ssh_url }}"
+{% endif %}
 {%- raw %}
-    scm_credential: "{{ orgs }} {{ env }} Gitlab Credential"
-    scm_branch: "{{ casc_gitlab_scm_branch | default(env) }}"
-    scm_credential: "{{ orgs }} {{ env }} Gitlab Credential"
+    scm_branch: "{{ casc_git_scm_branch | default(env) }}"
+    scm_credential: "{{ orgs }} {{ env }} Git Credential"
     scm_clean: false
     scm_delete_on_update: false
     scm_update_on_launch: false

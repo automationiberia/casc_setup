@@ -33,6 +33,7 @@
     - name: Create dir structure
       ansible.builtin.include_role:
         name: filetree_create
+        tasks_from: filetree_create_gitlab.yml
         apply:
           tags: filetree_create
       tags: filetree_create

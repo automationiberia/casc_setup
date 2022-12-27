@@ -1,0 +1,93 @@
+---
+# tasks file for filetree_create
+- name: "Assert that all needed variables are defined"
+  assert:
+    that:
+      - github_repository is defined
+      - github_branches is defined
+
+- name: Create a directories Parent
+  ansible.builtin.file:
+    path: "{{ github_project_temp_dir }}/{{ __org_dir_structure_parent_item.path }}"
+    state: directory
+    mode: "{{ __org_dir_structure_parent_item.mode }}"
+  loop: "{{ org_dir_structure_parent }}"
+  loop_control:
+    loop_var: __org_dir_structure_parent_item
+
+- name: "Create a directory if it does not exist {{ __org_dir_structure_group_vars_item }} group_vars"
+  ansible.builtin.file:
+    path: "{{ github_project_temp_dir }}/group_vars/{{ __org_dir_structure_group_vars_item }}"
+    state: directory
+    mode: '0755'
+  loop: "{{ github_branches }}"
+  loop_control:
+    loop_var: __org_dir_structure_group_vars_item
+
+- name: Create common directory structure if it does not exist
+  ansible.builtin.file:
+    path: "{{ github_project_temp_dir }}/{{ dir_orgs_vars }}/{{ github_repository }}/env/common/{{ __org_dir_structure_common_item.path }}"
+    state: directory
+    mode: "{{ __org_dir_structure_common_item.mode }}"
+  loop: "{{ org_dir_structure_common }}"
+  loop_control:
+    loop_var: __org_dir_structure_common_item
+
+- name: Create env directory structure if it does not exist
+  ansible.builtin.file:
+    path: "{{ github_project_temp_dir }}/{{ dir_orgs_vars }}/{{ github_repository }}/env/{{ __org_dir_structure_env_item.1 }}/{{ __org_dir_structure_env_item.0.path }}"
+    state: directory
+    mode: "{{ __org_dir_structure_env_item.0.mode }}"
+  loop: "{{ org_dir_structure_env | product(github_branches)|list }}"
+  loop_control:
+    loop_var: __org_dir_structure_env_item
+
+- name: Template init casc file to common
+  ansible.builtin.template:
+    src: "{{ __org_dir_structure_common_item.controller_list }}.j2"
+    dest: "{{ github_project_temp_dir }}/{{ dir_orgs_vars }}/{{ github_repository }}/env/common/{{ __org_dir_structure_common_item.path }}/{{ __org_dir_structure_common_item.controller_list }}.yml"
+    mode: '0644'
+  loop: "{{ org_dir_structure_common }}"
+  loop_control:
+    loop_var: __org_dir_structure_common_item
+
+- name: Template init casc file to env
+  ansible.builtin.template:
+    src: "{{ __org_dir_structure_env_item.0.controller_list }}.j2"
+    dest: "{{ github_project_temp_dir }}/{{ dir_orgs_vars }}/{{ github_repository }}/env/{{ __org_dir_structure_env_item.1 }}/{{ __org_dir_structure_env_item.0.path }}/{{ __org_dir_structure_env_item.0.controller_list }}.yml"
+    mode: '0644'
+  loop: "{{ org_dir_structure_env | product(github_branches)|list }}"
+  loop_control:
+    loop_var: __org_dir_structure_env_item
+
+- name: Template playbooks file to env
+  ansible.builtin.template:
+    src: "{{ __other_template_list_item.template }}"
+    dest: "{{ github_project_temp_dir }}/{{ __other_template_list_item.dest }}"
+    mode: '0644'
+  loop: "{{ other_template_list }}"
+  loop_control:
+    loop_var: __other_template_list_item
+
+- name: Template group_vars file to env
+  ansible.builtin.template:
+    src: configure_connection_controller_credentials.yml.j2
+    dest: "{{ github_project_temp_dir }}/group_vars/{{ __template_groupvars_env}}/configure_connection_controller_credentials.yml"
+    mode: '0644'
+  loop: "{{ github_branches }}"
+  loop_control:
+    loop_var: __template_groupvars_env
+
+- name: Add github_vars to all groups
+  ansible.builtin.template:
+    src: github_vars.yml.j2
+    dest: "{{ github_project_temp_dir }}/group_vars/all/github_vars.yml"
+    mode: '0644'
+
+- name: Upload images
+  ansible.builtin.copy:
+    src: "{{  __image_item }}"
+    dest: "{{ github_project_temp_dir }}/images/"
+  loop: "{{ lookup('ansible.builtin.fileglob', 'images/*', wantlist=True) }}"
+  loop_control:
+    loop_var: __image_item

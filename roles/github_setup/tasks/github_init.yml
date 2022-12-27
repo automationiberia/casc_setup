@@ -1,0 +1,28 @@
+- name: "Assert that all needed variables are defined"
+  assert:
+    that:
+      - github_api_url is defined
+      - github_url is defined
+      - github_api_token is defined
+      - github_repository is defined
+      - github_organization is defined
+      - github_api_user is defined
+      - github_http_protocol is defined
+      - github_private is defined
+
+- name: "Create GitHub {{ github_repository}} Repository"
+  community.general.github_repo:
+    api_url: "{{ github_api_url }}"
+    access_token: "{{  github_api_token }}"
+    name: "{{ github_repository}}"
+    organization: "{{ github_organization }}"
+    private: "{{ github_private }}"
+  register: github_repo_creation
+
+- name: Set git clone repo
+  set_fact:
+    github_repo_clone: "{{ github_http_protocol }}://{{ github_api_token }}@{{ github_url | regex_replace('http://|https://','') }}/{{ github_repo_creation.repo.full_name }}.git"
+
+- name: Clone a repo with separate git directory
+  ansible.builtin.command: git clone "{{ github_repo_clone }}" "{{ github_project_temp_dir }}"
+
