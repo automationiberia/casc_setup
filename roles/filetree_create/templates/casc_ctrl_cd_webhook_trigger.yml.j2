@@ -6,7 +6,11 @@
   tasks:
     - name: "Get the modified files over the dirs from all the received commits"
       set_fact:
+{% if gitlab_api_url is defined %}
         __env: "{{ awx_webhook_payload.ref.split('/')[2] if awx_webhook_payload.ref.split('/')[1] == 'heads' else  awx_webhook_payload.project.default_branch }}"
+{% elif github_api_url is defined %}
+        __env: "{{ awx_webhook_payload.ref.split('/')[2] if awx_webhook_payload.ref.split('/')[1] == 'heads' else  awx_webhook_payload.repository.default_branch }}"
+{% endif %}
         __casc_git_scm_branch: "{{ awx_webhook_payload.ref.split('/')[2] }}"
         __list_of_dirs: "{{ ((awx_webhook_payload.commits | map(attribute='added') | list) +
                            (awx_webhook_payload.commits | map(attribute='modified') | list) +
