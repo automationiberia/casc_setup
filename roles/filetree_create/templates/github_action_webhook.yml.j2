@@ -1,0 +1,30 @@
+name: GitHub Action {{ __branch }} Webhook
+on:
+{% if __branch == github_default_branch %}
+  release:
+    types: [published]
+{% else %}
+  push:
+    branches:
+      - {{ __branch }}
+{% endif %}
+jobs:
+  Launch-{{ __branch }}-Webhook:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v35
+        with:
+          separator: '", "'
+
+      - uses: distributhor/workflow-webhook@v2
+        env:
+          webhook_type: 'json-extended'
+          webhook_url: ${{ secrets.WEBHOOK_URL_{{ __branch | upper }} }}
+          webhook_secret: ${{ secrets.WEBHOOK_SECRET_{{ __branch | upper }} }}
+          data: '{ "modified_files": ["${{ (steps.changed-files.outputs.all_changed_files) }}"] }'

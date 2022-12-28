@@ -3,6 +3,9 @@
   connection: local
   gather_facts: no
   vars:
+    automation_hub: "demo-hub1-dev.testing.com"
+    controller_dev: "demo-ctr1-dev.testing.com"
+    controller_pro: "demo-ctr1-prd.testing.com"
     github_api_url: https://api.github.com
     github_url: https://github.com
     github_api_user_mail: ToDo
@@ -12,26 +15,19 @@
     github_organization: org
     github_private: true
     github_http_protocol: https
+    github_default_branch: prod
     github_branches:
       - prod
       - dev
     org_dir_structure_parent:
+      - { path: ".github/workflows", mode: '0755' }
       - { path: "collections", mode: '0755' }
       - { path: "group_vars", mode: '0755' }
       - { path: "group_vars/all", mode: '0755' }
       - { path: "images", mode: '0755' }
-      - { path: "{{ dir_orgs_vars }}/{{ github_repository }}", mode: '0755' }
-      - { path: "{{ dir_orgs_vars }}/{{ github_repository }}/env", mode: '0755' }
-      - { path: "{{ dir_orgs_vars }}/{{ github_repository }}/env/common", mode: '0755' }
-    other_template_list:
-      - { template: casc_ctrl_config.yml.j2, dest:  casc_ctrl_config.yml }
-      - { template: casc_ctrl_drop_diff.yml.j2, dest: casc_ctrl_drop_diff.yml }
-      - { template: casc_ctrl_cd_webhook_trigger.yml.j2, dest: casc_ctrl_cd_webhook_trigger.yml }
-      - { template: requirements.yml.j2, dest: collections/requirements.yml }
-      - { template: README_github.md.j2, dest: README.md }
-      - { template: gitignore.j2, dest: .gitignore }
-      - { template: github_webhook.yml.j2, dest: github_webhook.yml }
-      - { template: inventory.j2, dest: inventory }
+      - { path: "{{ dir_orgs_vars }}/{{ gitlab_project }}", mode: '0755' }
+      - { path: "{{ dir_orgs_vars }}/{{ gitlab_project }}/env", mode: '0755' }
+      - { path: "{{ dir_orgs_vars }}/{{ gitlab_project }}/env/common", mode: '0755' }
 
   tasks:
     - name: GitHub init

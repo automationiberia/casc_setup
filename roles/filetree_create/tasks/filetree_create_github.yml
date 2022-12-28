@@ -35,7 +35,7 @@
 
 - name: Create env directory structure if it does not exist
   ansible.builtin.file:
-    path: "{{ github_project_temp_dir }}/{{ dir_orgs_vars }}/{{ github_repository }}/env/{{ __org_dir_structure_env_item.1 }}/{{ __org_dir_structure_env_item.0.path }}"
+    path: "{{ github_project_temp_dir }}/{{ dir_orgs_vars }}/{{ github_repository }}/env/{{ env }}/{{ __org_dir_structure_env_item.0.path }}"
     state: directory
     mode: "{{ __org_dir_structure_env_item.0.mode }}"
   loop: "{{ org_dir_structure_env | product(github_branches)|list }}"
@@ -69,10 +69,18 @@
   loop_control:
     loop_var: __other_template_list_item
 
+- name: Template github actions
+  ansible.builtin.template:
+    src:  github_action_webhook.yml.j2
+    dest: ".github/workflows/github-{{ branch }}-webhook.yml"
+  loop: "{{ github_branches }}"
+  loop_control:
+    loop_var: __branch
+
 - name: Template group_vars file to env
   ansible.builtin.template:
     src: configure_connection_controller_credentials.yml.j2
-    dest: "{{ github_project_temp_dir }}/group_vars/{{ __template_groupvars_env}}/configure_connection_controller_credentials.yml"
+    dest: "{{ github_project_temp_dir }}/group_vars/{{ __template_groupvars_env }}/configure_connection_controller_credentials.yml"
     mode: '0644'
   loop: "{{ github_branches }}"
   loop_control:
