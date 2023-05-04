@@ -12,7 +12,7 @@
   block:
     - name: "Get the template related information"
       ansible.builtin.uri:
-        url: "https://{{ controller_hostname }}/api/v2/{{ 'workflow_' if is_workflow }}job_templates/?name={{ job_template_name | urlencode }}"
+        url: "https://{{ controller_hostname }}/api/v2/{{ 'workflow_' if (is_workflow | bool) }}job_templates/?name={{ job_template_name | urlencode }}"
         user: "{{ controller_username }}"
         password: "{{ controller_password }}"
         method: GET
@@ -34,7 +34,7 @@
 
 - name: "Set fact"
   set_fact:
-    controller_webhook_url: "https://{{ controller_hostname }}/api/v2/{{ 'workflow_' if is_workflow}}job_templates/{{ job_template_name | urlencode }}++{{ gitlab_project }}/gitlab/"
+    controller_webhook_url: "https://{{ controller_hostname }}/api/v2/{{ 'workflow_' if (is_workflow | bool) }}job_templates/{{ job_template_name | urlencode }}++{{ gitlab_project }}/gitlab/"
     controller_webhook_key: "{{ webhook_key_get.json.webhook_key }}"
 
 - name: "Adding a project hook"
