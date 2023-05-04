@@ -5,25 +5,25 @@
       - controller_username is defined
       - controller_password is defined
       - controller_validate_certs is defined
-      - workflow_job_template_name is defined
+      - workflow_job_template_name is defined or job_template_name is defined
       - gitlab_project is defined
 
 - name: "Setup authentication (block)"
   block:
-    - name: "Get the Authentication Token for the future requests"
+    - name: "Get the template related information"
       ansible.builtin.uri:
-        url: "https://{{ controller_hostname }}/api/v2/workflow_job_templates/?name={{ workflow_job_template_name | urlencode }}"
+        url: "https://{{ controller_hostname }}/api/v2/{{ 'workflow_' if is_workflow }}job_templates/?name={{ job_template_name | urlencode }}"
         user: "{{ controller_username }}"
         password: "{{ controller_password }}"
         method: GET
         force_basic_auth: true
         validate_certs: "{{ controller_validate_certs }}"
         status_code: 200
-      register: authtoken_res
+      register: template_res
 
     - name: "Get the Webhook key"
       ansible.builtin.uri:
-        url: "https://{{ controller_hostname }}/{{ authtoken_res.json.results[0].related.webhook_key }}"
+        url: "https://{{ controller_hostname }}/{{ template_res.json.results[0].related.webhook_key }}"
         user: "{{ controller_username }}"
         password: "{{ controller_password }}"
         method: GET
@@ -34,7 +34,7 @@
 
 - name: "Set fact"
   set_fact:
-    controller_webhook_url: "https://{{ controller_hostname }}/api/v2/workflow_job_templates/{{  workflow_job_template_name | urlencode }}++{{ gitlab_project }}/gitlab/"
+    controller_webhook_url: "https://{{ controller_hostname }}/api/v2/{{ 'workflow_' if is_workflow}}job_templates/{{ job_template_name | urlencode }}++{{ gitlab_project }}/gitlab/"
     controller_webhook_key: "{{ webhook_key_get.json.webhook_key }}"
 
 - name: "Adding a project hook"
