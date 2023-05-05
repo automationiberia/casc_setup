@@ -33,8 +33,8 @@
       tags:
         - always
   roles:
-    - {role: infra.controller_configuration.filetree_read, assign_galaxy_credentials_to_org: false}
-    - {role: infra.controller_configuration.dispatch, assign_galaxy_credentials_to_org: false}
+    - {role: infra.controller_configuration.filetree_read}
+    - {role: infra.controller_configuration.dispatch: false}
 
   post_tasks:
     - block:
