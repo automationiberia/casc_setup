@@ -1,32 +1,17 @@
 ---
-controller_schedules:
+controller_schedules: []
 {%- raw %}
-  - name: "{{ orgs }} CasC_Objects_Cleanup"
-    description: CasC_Ojbects_Cleanup
-    unified_job_template: "{{ orgs }} JT_CasC_Ctrl_Drop_Diff"
-    rrule: DTSTART;TZID=Europe/Madrid:20220127T163000 RRULE:INTERVAL=1;FREQ=DAILY
-    enabled: false
-    extra_data:
-      ansible_python_interpreter: /usr/bin/python3
-      ansible_async_dir: /home/runner/.ansible_async/
-      env: "{{ env }}"
-      dir_orgs_vars: orgs_vars
-      orgs: "{{ orgs }}"
-      casc_gitlab_scm_branch: "{{ casc_gitlab_scm_branch | default(env) }}"
-    organization: "{{ orgs }}"
-
-  - name: "{{ orgs }} CasC_Objects_Creation"
-    description: CasC_Ojbects_Cleanup
-    unified_job_template: "{{ orgs }} JT_CasC_Ctrl_Config"
-    rrule: DTSTART;TZID=Europe/Madrid:20220127T000000 RRULE:INTERVAL=1;FREQ=DAILY
-    enabled: false
-    extra_data:
-      ansible_python_interpreter: /usr/bin/python3
-      ansible_async_dir: /home/runner/.ansible_async/
-      env: "{{ env }}"
-      dir_orgs_vars: orgs_vars
-      orgs: "{{ orgs }}"
-      casc_gitlab_scm_branch: "{{ casc_gitlab_scm_branch | default(env) }}"
-    organization: "{{ orgs }}"
+#   - name: "{{ orgs }}-SCHEDULE-NAME"
+#     description: "Schedule for your needs"
+#     unified_job_template: "{{ orgs }}-JOB-TEMPLATE-NAME"
+#     rrule: DTSTART;TZID=Europe/Madrid:20220127T163000 RRULE:INTERVAL=1;FREQ=DAILY
+#     enabled: false
+#     extra_data:
+#       ansible_python_interpreter: /usr/bin/python3
+#       ansible_async_dir: /home/runner/.ansible_async/
+#       env: "{{ env }}"
+#       dir_orgs_vars: orgs_vars
+#       orgs: "{{ orgs }}"
+#     organization: "{{ orgs }}"
 {% endraw %}
 ...
