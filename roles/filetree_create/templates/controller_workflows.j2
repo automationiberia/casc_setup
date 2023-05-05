@@ -1,34 +1,34 @@
 ---
-controller_workflows:
+controller_workflows: []
 {%- raw %}
-  - name: "{{ orgs }} WF_CasC_Ctrl"
-    state: present
-    description: "workflow for CasC on AAP"
-    survey_enabled: false
-    ask_variables_on_launch: true
-    allow_simultaneous: true
-    scm_branch: "{{ env }}"
-    webhook_service: "gitlab"
-    organization: "{{ orgs }}"
-    simplified_workflow_nodes:
-      - identifier: "LAUNCH_CI_{{ orgs }}"
-        workflow_job_template: "{{ orgs }} WF_CasC_Ctrl"
-        unified_job_template: "{{ orgs }} JT_CasC_Ctrl_CD_Webhook_Trigger"
-        job_type: run
-        organization: "{{ orgs }}"
-        workflow: "{{ orgs }} WF_CasC_Ctrl"
-
-      - identifier: "PROJECT_SYNC_{{ orgs }}"
-        workflow_job_template: "{{ orgs }} WF_CasC_Ctrl"
-        unified_job_template: "{{ orgs }} CasC_Data"
-        organization: "{{ orgs }}"
-        workflow: "{{ orgs }} WF_CasC_Ctrl"
-        success_nodes:
-          - "LAUNCH_CI_{{ orgs }}"
-    notification_templates_started: []
-    notification_templates_success: []
-    notification_templates_error: []
-    notification_templates_approvals: []
-    survey_spec: {}
+#   - name: "{{ orgs }} Demo Workflow"
+#     state: present
+#     description: "Demo Workflow"
+#     survey_enabled: false
+#     ask_variables_on_launch: true
+#     allow_simultaneous: true
+#     scm_branch: "{{ env }}"
+#     webhook_service: "gitlab"
+#     organization: "{{ orgs }}"
+#     simplified_workflow_nodes:
+#       - identifier: "NODE_2_{{ orgs }}"
+#         workflow_job_template: "{{ orgs }} Demo Workflow"
+#         unified_job_template: "{{ orgs }} Demo Job Template"
+#         job_type: run
+#         organization: "{{ orgs }}"
+#         workflow: "{{ orgs }} Demo Workflow"
+#
+#       - identifier: "NODE_1_{{ orgs }}"
+#         workflow_job_template: "{{ orgs }} Demo Workflow"
+#         unified_job_template: "{{ orgs }} Demo Project"
+#         organization: "{{ orgs }}"
+#         workflow: "{{ orgs }} Demo Workflow"
+#         success_nodes:
+#           - "NODE_2_{{ orgs }}"
+#     notification_templates_started: []
+#     notification_templates_success: []
+#     notification_templates_error: []
+#     notification_templates_approvals: []
+#     survey_spec: {}
 {% endraw %}
 ...

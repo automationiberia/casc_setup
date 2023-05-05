@@ -1,64 +1,21 @@
 ---
-controller_templates:
+controller_templates: []
 {%- raw %}
-  - name: "{{ orgs }} JT_CasC_Ctrl_CD_Webhook_Trigger"
-    description: "Template to attend Controller CasC webhook"
-    organization: "{{ orgs }}"
-    project: "{{ orgs }} CasC_Data"
-    inventory: "{{ orgs }} Localhost"
-    playbook: "casc_ctrl_cd_webhook_trigger.yml"
-    job_type: run
-    fact_caching_enabled: false
-    credentials:
-      - "{{ orgs }} {{ env }} AAP Credential"
-    concurrent_jobs_enabled: true
-    ask_scm_branch_on_launch: true
-    extra_vars:
-      ansible_python_interpreter: /usr/bin/python3
-      ansible_async_dir: /home/runner/.ansible_async/
-    execution_environment: "ee-casc"
-
-  - name: "{{ orgs }} JT_CasC_Ctrl_Config"
-    description: "Template to deploy Controller objects in Org {{ orgs }}"
-    organization: "{{ orgs }}"
-    project: "{{ orgs }} CasC_Data"
-    inventory: "{{ orgs }} Localhost"
-    playbook: "casc_ctrl_config.yml"
-    job_type: run
-    fact_caching_enabled: false
-    credentials:
-      - "{{ orgs }} {{ env }} AAP Credential"
-      - "{{ orgs }} {{ env }} Vault Credential"
-    concurrent_jobs_enabled: true
-    ask_scm_branch_on_launch: true
-    ask_tags_on_launch: true
-    ask_verbosity_on_launch: true
-    ask_variables_on_launch: true
-    extra_vars:
-      ansible_python_interpreter: /usr/bin/python3
-      ansible_async_dir: /home/runner/.ansible_async/
-    execution_environment: "ee-casc"
-
-  - name: "{{ orgs }} JT_CasC_Ctrl_Drop_Diff"
-    description: "Template to assure no difference between API and repository"
-    organization: "{{ orgs }}"
-    project: "{{ orgs }} CasC_Data"
-    inventory: "{{ orgs }} Localhost"
-    playbook: "casc_ctrl_drop_diff.yml"
-    job_type: run
-    fact_caching_enabled: false
-    credentials:
-      - "{{ orgs }} {{ env }} AAP Credential"
-      - "{{ orgs }} {{ env }} Vault Credential"
-    concurrent_jobs_enabled: true
-    ask_scm_branch_on_launch: true
-    ask_tags_on_launch: true
-    ask_verbosity_on_launch: true
-    ask_variables_on_launch: true
-    extra_vars:
-      ansible_python_interpreter: /usr/bin/python3
-      ansible_async_dir: /home/runner/.ansible_async/
-    execution_environment: "ee-casc"
-
+#   - name: "{{ orgs }} Demo Job Template"
+#     description: "Demo Job Template"
+#     organization: "{{ orgs }}"
+#     project: "{{ orgs }} Demo Project"
+#     inventory: "{{ orgs }} Demo Inventory"
+#     playbook: "demoplaybook.yml"
+#     job_type: run
+#     fact_caching_enabled: false
+#     credentials:
+#       - "{{ orgs }} {{ env }} AAP Credential"
+#     concurrent_jobs_enabled: true
+#     ask_scm_branch_on_launch: true
+#     extra_vars:
+#       ansible_python_interpreter: /usr/bin/python3
+#       ansible_async_dir: /home/runner/.ansible_async/
+#     execution_environment: "ee-casc"
 {% endraw %}
 ...

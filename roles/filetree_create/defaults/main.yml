@@ -36,7 +36,6 @@ org_dir_structure_env:
   - { path: "controller_hosts.d", mode: '0755', controller_list: controller_hosts }
   - { path: "controller_instance_groups.d", mode: '0755', controller_list: controller_instance_groups }
   - { path: "controller_inventory_sources.d", mode: '0755', controller_list: controller_inventory_sources }
-  - { path: "controller_settings.d", mode: '0755', controller_list: controller_settings }
 
 other_template_list:
   - { template: casc_ctrl_config.yml.j2, dest:  casc_ctrl_config.yml }
