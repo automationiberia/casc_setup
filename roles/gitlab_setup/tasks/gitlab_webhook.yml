@@ -5,6 +5,7 @@
       - controller_username is defined
       - controller_password is defined
       - controller_validate_certs is defined
+      - casc_organization is defined
       - workflow_job_template_name is defined or job_template_name is defined
       - gitlab_project is defined
 
@@ -34,7 +35,7 @@
 
 - name: "Set fact"
   set_fact:
-    controller_webhook_url: "https://{{ controller_hostname }}/api/v2/{{ 'workflow_' if (is_workflow | bool) }}job_templates/{{ job_template_name | urlencode }}++{{ gitlab_project }}/gitlab/"
+    controller_webhook_url: "https://{{ controller_hostname }}/api/v2/{{ 'workflow_' if (is_workflow | bool) }}job_templates/{{ job_template_name | urlencode }}++{{ casc_organization }}/gitlab/"
     controller_webhook_key: "{{ webhook_key_get.json.webhook_key }}"
 
 - name: "Adding a project hook"
