@@ -63,6 +63,8 @@
 - debug:
     msg:
       - "{{ repo_token_res }}"
+      - "{{ repo_token_res.json[0] }}"
+      - "{{ repo_token_res.json[0].token }}"
 ...
 #    api_url: "{{ gitlab_api_url }}"
 #    validate_certs: "{{ gitlab_validate_certs }}"
