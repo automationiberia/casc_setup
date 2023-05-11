@@ -27,17 +27,6 @@
       Content-Type: application/json
   register: repo_id_res
 
-- debug:
-    msg:
-      - "{{ repo_id_res.json }}"
-      - "{{ repo_id_res.json[0] }}"
-      - "{{ repo_id_res.json[0].id }}"
-
-#    curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-#    --header "Content-Type:application/json" \
-#    --data '{ "name":"test_token", "scopes":["api", "read_repository"], "expires_at":"2021-01-31", "access_level": 30 }' \
-#    "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens"
-
 - name: Create an access token for the given project
   ansible.builtin.uri:
     url: "{{ gitlab_api_url }}/api/v4/projects/{{ repo_id_res.json[0].id }}/access_tokens/"
@@ -58,12 +47,9 @@
       Content-Type: application/json
   register: repo_token_res
 
-- debug:
-    msg:
-      - "{{ repo_token_res }}"
-      - "{{ repo_token_res.json }}"
-      - "{{ repo_token_res.json.token }}"
+- name: Create the output artifacts
+  ansible.builtin.set_stats:
+    aggregate: true
+    data:
+      repo_token: "{{ repo_token_res.json.token }}"
 ...
-#    api_url: "{{ gitlab_api_url }}"
-#    validate_certs: "{{ gitlab_validate_certs }}"
-#    api_token: "{{  gitlab_api_token }}"
