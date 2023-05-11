@@ -40,10 +40,10 @@
 
 - name: Create an access token for the given project
   ansible.builtin.uri:
-    url: "{{ gitlab_api_url }}/api/v4/projects/{{ repo_id_res.json[0].id }}/deploy_tokens/"
+    url: "{{ gitlab_api_url }}/api/v4/projects/{{ repo_id_res.json[0].id }}/access_tokens/"
     method: POST
-    #body: "{{ lookup('ansible.builtin.file','issue.json') }}"
-    #body: '{"name": "CasC deploy token", "expires_at": "3000-01-01", "access_level": 50, "scopes": ["api"]}'
+    status_code: 201
+    body_format: json
     body:
       name: "CasC deploy token"
       expires_at: "3000-01-01"
@@ -51,8 +51,6 @@
       scopes:
         - api
         - read_repository
-    # status_code: 201
-    body_format: json
     return_content: true
     validate_certs: false
     headers:
@@ -63,8 +61,8 @@
 - debug:
     msg:
       - "{{ repo_token_res }}"
-      - "{{ repo_token_res.json[0] }}"
-      - "{{ repo_token_res.json[0].token }}"
+      - "{{ repo_token_res.json }}"
+      - "{{ repo_token_res.json.token }}"
 ...
 #    api_url: "{{ gitlab_api_url }}"
 #    validate_certs: "{{ gitlab_validate_certs }}"
