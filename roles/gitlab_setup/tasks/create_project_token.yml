@@ -19,6 +19,7 @@
   ansible.builtin.uri:
     url: "{{ gitlab_api_url }}/api/v4/projects?search={{ gitlab_project_creation.project.path }}"
     method: GET
+    status_code: 200
     return_content: true
     validate_certs: false
     headers:
@@ -27,28 +28,34 @@
   register: repo_id_res
 
 - debug:
-    var: repo_id_res
+    msg:
+      - "{{ repo_id_res.json }}
+      - "{{ repo_id_res.json[0] }}
+      - "{{ repo_id_res.json[0].id }}
 
-#   https://gitlab.iam.lab/api/v4/projects?search=NewOrgAut
-#
-# - name: Set Git repo URL
-#   set_fact:
-#     gitlab_repo: "{{ gitlab_http_protocol }}://{{ gitlab_api_user }}:{{ gitlab_api_token }}@{{ gitlab_api_url | regex_replace('http://|https://','') }}/api/v4/{{ gitlab_project_creation.project.path_with_namespace}}.git"
-#
-# - name: Create a deploy token for the given project
-#   ansible.builtin.uri:
-#     url: "{{ gitlab_api_url }}"
-#     method: POST
-#     #body: "{{ lookup('ansible.builtin.file','issue.json') }}"
-#     body: '{"name": "CasC deploy token", "expires_at": "3000-01-01", "username": "", "scopes": ["read_repository"]}'
-#     # status_code: 201
-#     body_format: json
-#     return_content: true
-#     headers:
-#       PRIVATE-TOKEN: "{{ gitlab_api_token }}"
-#       Content-Type: application/json
+#    curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+#    --header "Content-Type:application/json" \
+#    --data '{ "name":"test_token", "scopes":["api", "read_repository"], "expires_at":"2021-01-31", "access_level": 30 }' \
+#    "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens"
+
+- name: Create an access token for the given project
+  ansible.builtin.uri:
+    url: "{{ gitlab_api_url }}/api/v4/projects/{{ repo_id_res.json[0].id }}/deploy_tokens/"
+    method: POST
+    #body: "{{ lookup('ansible.builtin.file','issue.json') }}"
+    body: '{"name": "CasC deploy token", "expires_at": "3000-01-01", "access_level": 50, "scopes": ["read_repository"]}'
+    # status_code: 201
+    body_format: json
+    return_content: true
+    headers:
+      PRIVATE-TOKEN: "{{ gitlab_api_token }}"
+      Content-Type: application/json
+  register: repo_token_res
+
+- debug:
+    msg:
+      - "{{ repo_token_res }}"
 ...
 #    api_url: "{{ gitlab_api_url }}"
 #    validate_certs: "{{ gitlab_validate_certs }}"
 #    api_token: "{{  gitlab_api_token }}"
-#    "https://gitlab.example.com/api/v4/projects/5/deploy_tokens/"
