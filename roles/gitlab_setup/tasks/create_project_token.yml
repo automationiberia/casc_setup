@@ -43,10 +43,11 @@
     url: "{{ gitlab_api_url }}/api/v4/projects/{{ repo_id_res.json[0].id }}/deploy_tokens/"
     method: POST
     #body: "{{ lookup('ansible.builtin.file','issue.json') }}"
-    body: '{"name": "CasC deploy token", "expires_at": "3000-01-01", "access_level": 50, "scopes": ["read_repository"]}'
+    body: '{"name": "CasC deploy token", "expires_at": "3000-01-01", "access_level": 50, "scopes": ["api","read_repository"]}'
     # status_code: 201
     body_format: json
     return_content: true
+    validate_certs: false
     headers:
       PRIVATE-TOKEN: "{{ gitlab_api_token }}"
       Content-Type: application/json
