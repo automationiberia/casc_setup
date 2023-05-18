@@ -1,11 +1,11 @@
 ---
 controller_templates: []
 {%- raw %}
-#   - name: "{{ orgs }} Demo Job Template"
+#   - name: "{{ orgs }} {{ env }} Demo Job Template"
 #     description: "Demo Job Template"
 #     organization: "{{ orgs }}"
-#     project: "{{ orgs }} Demo Project"
-#     inventory: "{{ orgs }} Demo Inventory"
+#     project: "{{ orgs }} {{ env }} Demo Project"
+#     inventory: "{{ orgs }} {{ env }} Demo Inventory"
 #     playbook: "demoplaybook.yml"
 #     job_type: run
 #     fact_caching_enabled: false

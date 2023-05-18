@@ -3,6 +3,6 @@ controller_hosts:
 {%- raw %}
   - name: localhost
     description: localhost
-    inventory: "{{ orgs }} Localhost"
+    inventory: "{{ orgs }} {{ env }} Localhost"
 {% endraw %}
 ...

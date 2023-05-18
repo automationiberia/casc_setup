@@ -196,11 +196,11 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 {%- raw %}
    ---
    controller_templates:
-     - name: "{{ orgs }} New Job Template"
+     - name: "{{ orgs }} {{ env }} New Job Template"
        description: "Template to show how to add a new JT"
        organization: "{{ orgs }}"
-       project: "{{ orgs }} CasC_Data"
-       inventory: "{{ orgs }} Localhost"
+       project: "{{ orgs }} {{ env }} CasC_Data"
+       inventory: "{{ orgs }} {{ env }} Localhost"
        playbook: "new_playbook1.yaml"
        job_type: run
        fact_caching_enabled: false
@@ -303,11 +303,11 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 {%- raw %}
    ---
    controller_templates:
-     - name: "{{ orgs }} New Job Template"
+     - name: "{{ orgs }} {{ env }} New Job Template"
        description: "Template to show how to add a new JT"
        organization: "{{ orgs }}"
-       project: "{{ orgs }} CasC_Data"
-       inventory: "{{ orgs }} Localhost"
+       project: "{{ orgs }} {{ env }} CasC_Data"
+       inventory: "{{ orgs }} {{ env }} Localhost"
        playbook: "new_playbook2.yaml"
        job_type: run
        fact_caching_enabled: false
