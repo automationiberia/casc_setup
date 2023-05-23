@@ -3,7 +3,6 @@
     that:
       - gitlab_api_url is defined
       - gitlab_api_token is defined
-      - gitlab_group is defined
       - gitlab_project is defined
       - gitlab_validate_certs is defined
       - gitlab_branches is defined
@@ -13,7 +12,7 @@
     api_url: "{{ gitlab_api_url }}"
     validate_certs: "{{ gitlab_validate_certs }}"
     api_token: "{{  gitlab_api_token }}"
-    project: "{{ gitlab_group }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }}"
+    project: "{{ gitlab_group | default(omit) }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }}"
     branch: "{{ __gitlab_branches_item }}"
     ref_branch: "{{ gitlab_default_branch }}"
     state: present
@@ -23,7 +22,7 @@
     api_url: "{{ gitlab_api_url }}"
     validate_certs: "{{ gitlab_validate_certs }}"
     api_token: "{{  gitlab_api_token }}"
-    project: "{{ gitlab_group }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }}"
+    project: "{{ gitlab_group | default(omit) }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }}"
     name: "{{ __gitlab_branches_item }}"
     merge_access_levels: maintainer
     push_access_level: nobody

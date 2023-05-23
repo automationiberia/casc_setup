@@ -44,7 +44,7 @@
     api_token: "{{ gitlab_api_token | default(omit, true) }}"
     api_username: "{{ gitlab_api_user | default(omit, true) }}"
     api_password: "{{ gitlab_api_password | default(omit, true) }}"
-    project: "{{ gitlab_group }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }}"
+    project: "{{ gitlab_group | default(omit) }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}/{{ gitlab_project }}"
     hook_url: "{{ controller_webhook_url }}"
     state: present
     push_events: "{{ gitlab_action_push }}"
