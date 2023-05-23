@@ -1,8 +1,12 @@
 ---
 gitlab_api_url: {{ gitlab_api_url }}
 gitlab_validate_certs: {{ gitlab_validate_certs }}
+{% if gitlab_group is defined %}
 gitlab_group: {{ gitlab_group }}
-gitlab_subgroup: {{ gitlab_subgroup | default(omit, true) }}
+{% endif %}
+{% if gitlab_subgroup is defined %}
+gitlab_subgroup: {{ gitlab_subgroup }}
+{% endif %}
 gitlab_project: {{ gitlab_project }}
 workflow_job_template_name: "{{ gitlab_project }} WF_CasC_Ctrl"
 ...

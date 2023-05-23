@@ -15,7 +15,7 @@
     validate_certs: "{{ gitlab_validate_certs }}"
     api_token: "{{  gitlab_api_token }}"
     name: "{{ gitlab_project }}"
-    group: "{{ gitlab_group | default(omit) }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}"
+    group: "{{ ( gitlab_group ) if gitlab_group is defined else '' }}{{ ('/' + gitlab_subgroup) if gitlab_subgroup is defined else '' }}"
     initialize_with_readme: true
     default_branch:  "{{ gitlab_default_branch }}"
     visibility: "{{ gitlab_visibility }}"
