@@ -4,7 +4,6 @@
     that:
       - gitlab_api_url is defined
       - gitlab_api_token is defined
-      - gitlab_group is defined
       - gitlab_project is defined
       - gitlab_validate_certs is defined
       - gitlab_api_user is defined
@@ -35,7 +34,6 @@
     body_format: json
     body:
       name: "CasC deploy token"
-      expires_at: "3000-01-01"
       access_level: 50
       scopes:
         - api
