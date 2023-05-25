@@ -35,7 +35,7 @@
 
 - name: "Set fact"
   set_fact:
-    controller_webhook_url: "https://{{ controller_hostname }}/api/v2/{{ 'workflow_' if (is_workflow | bool) }}job_templates/{{ job_template_name }}++{{ casc_organization }}/gitlab/"
+    controller_webhook_url: "https://{{ controller_hostname }}/api/v2/{{ 'workflow_' if (is_workflow | bool) }}job_templates/{{ job_template_name | urlencode }}++{{ casc_organization }}/gitlab/"
     controller_webhook_key: "{{ webhook_key_get.json.webhook_key }}"
 
 - name: "Adding a project hook"
