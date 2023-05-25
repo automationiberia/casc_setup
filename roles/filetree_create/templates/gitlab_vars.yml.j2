@@ -1,10 +1,10 @@
 ---
 gitlab_api_url: {{ gitlab_api_url }}
 gitlab_validate_certs: {{ gitlab_validate_certs }}
-{% if gitlab_group is defined %}
+{% if gitlab_group is defined and gitlab_group is not regex('^\\s*$') %}
 gitlab_group: {{ gitlab_group }}
 {% endif %}
-{% if gitlab_subgroup is defined %}
+{% if gitlab_subgroup is defined and gitlab_subgroup is not regex('^\\s*$') %}
 gitlab_subgroup: {{ gitlab_subgroup }}
 {% endif %}
 gitlab_project: {{ gitlab_project }}

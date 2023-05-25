@@ -24,7 +24,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 1. Clone the repository and create a new day-zero branch
 
    ```
-   git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}:{{ ( gitlab_group + '/') if gitlab_group is defined else gitlab_api_user + '/' }}{{ (gitlab_subgroup + '/') if gitlab_subgroup is defined else '' }}{{ gitlab_project }}.git
+   git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}:{{ ( gitlab_group + '/') if (gitlab_group is defined and gitlab_group is not regex('^\\s*$')) else gitlab_api_user + '/' }}{{ (gitlab_subgroup + '/') if (gitlab_subgroup is defined and gitlab_subgroup is not regex('^\\s*$')) else '' }}{{ gitlab_project }}.git
    cd {{ gitlab_project }}/
    git checkout -b casc-dev-day0
    ```
@@ -137,7 +137,7 @@ Before using CasC as a GitOps approach, it is needed to launch an initialization
 1. Clone the given repository:
 
    ```
-   git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}:{{ ( gitlab_group + '/') if gitlab_group is defined else gitlab_api_user + '/' }}{{ ( gitlab_subgroup + '/') if gitlab_subgroup is defined else '' }}{{ gitlab_project }}.git
+   git clone {{ gitlab_api_url | regex_replace('http://|https://','git@') }}:{{ ( gitlab_group + '/') if (gitlab_group is defined and gitlab_group is not regex('^\\s*$')) else gitlab_api_user + '/' }}{{ ( gitlab_subgroup + '/') if (gitlab_subgroup is defined and gitlab_subgroup is not regex('^\\s*$')) else '' }}{{ gitlab_project }}.git
 
    cd {{ gitlab_project }}/
    ```

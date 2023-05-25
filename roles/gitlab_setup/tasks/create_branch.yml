@@ -12,7 +12,7 @@
     api_url: "{{ gitlab_api_url }}"
     validate_certs: "{{ gitlab_validate_certs }}"
     api_token: "{{  gitlab_api_token }}"
-    project: "{{ ( gitlab_group +'/' ) if gitlab_group is defined else gitlab_api_user + '/' }}{{ ( gitlab_subgroup +'/' ) if gitlab_subgroup is defined else '' }}{{ gitlab_project }}"
+    project: "{{ ( gitlab_group + '/' ) if (gitlab_group is defined and gitlab_group is not regex('^\\s*$')) else gitlab_api_user + '/' }}{{ ( gitlab_subgroup +'/' ) if (gitlab_subgroup is defined and gitlab_subgroup is not regex('^\\s*$')) else '' }}{{ gitlab_project }}"
     branch: "{{ __gitlab_branches_item }}"
     ref_branch: "{{ gitlab_default_branch }}"
     state: present
@@ -22,7 +22,7 @@
     api_url: "{{ gitlab_api_url }}"
     validate_certs: "{{ gitlab_validate_certs }}"
     api_token: "{{  gitlab_api_token }}"
-    project: "{{ ( gitlab_group +'/' ) if gitlab_group is defined else gitlab_api_user + '/' }}{{ (gitlab_subgroup + '/') if gitlab_subgroup is defined else '' }}{{ gitlab_project }}"
+    project: "{{ ( gitlab_group + '/' ) if (gitlab_group is defined and gitlab_group is not regex('^\\s*$')) else gitlab_api_user + '/' }}{{ (gitlab_subgroup + '/') if (gitlab_subgroup is defined and gitlab_subgroup is not regex('^\\s*$')) else '' }}{{ gitlab_project }}"
     name: "{{ __gitlab_branches_item }}"
     merge_access_levels: maintainer
     push_access_level: nobody
