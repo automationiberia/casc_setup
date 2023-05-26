@@ -8,6 +8,7 @@
       - casc_organization is defined
       - workflow_job_template_name is defined or job_template_name is defined
       - gitlab_project is defined
+      - gitlab_api_user is defined or gitlab_api_token is defined
 
 - name: "Setup authentication (block)"
   block:
@@ -38,11 +39,16 @@
     controller_webhook_url: "https://{{ controller_hostname }}/api/v2/{{ 'workflow_' if (is_workflow | bool) }}job_templates/{{ job_template_name | urlencode }}++{{ casc_organization }}/gitlab/"
     controller_webhook_key: "{{ webhook_key_get.json.webhook_key }}"
 
+- debug:
+    msg:
+      - "{{ lookup('pipe', 'env') }}"
+      - "{{ vars }}"
+
 - name: "Adding a project hook"
   community.general.gitlab_hook:
     api_url: "{{ gitlab_api_url }}"
     api_token: "{{ gitlab_api_token | default(omit, true) }}"
-    api_username: "{{ gitlab_api_user | default(omit, true) }}"
+    api_username: "{{ (gitlab_api_user | default(omit, true)) if gitlab_api_token is not defined else omit }}"
     api_password: "{{ gitlab_api_password | default(omit, true) }}"
     project: "{{ ( gitlab_group + '/' ) if (gitlab_group is defined and gitlab_group is not regex('^\\s*$')) else (gitlab_api_user + '/') }}{{ (gitlab_subgroup + '/') if (gitlab_subgroup is defined and gitlab_subgroup is not regex('^\\s*$')) else '' }}{{ gitlab_project }}"
     hook_url: "{{ controller_webhook_url }}"
