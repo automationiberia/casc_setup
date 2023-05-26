@@ -1,9 +1,9 @@
 ---
 controller_schedules: []
 {%- raw %}
-#   - name: "{{ orgs }}-SCHEDULE-NAME"
+#   - name: "{{ orgs }} {{ env }} Schedule Name"
 #     description: "Schedule for your needs"
-#     unified_job_template: "{{ orgs }}-JOB-TEMPLATE-NAME"
+#     unified_job_template: "{{ orgs }} {{ env }} Job Template Name"
 #     rrule: DTSTART;TZID=Europe/Madrid:20220127T163000 RRULE:INTERVAL=1;FREQ=DAILY
 #     enabled: false
 #     extra_data:

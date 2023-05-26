@@ -1,7 +1,7 @@
 ---
 controller_workflows: []
 {%- raw %}
-#   - name: "{{ orgs }} Demo Workflow"
+#   - name: "{{ orgs }} {{ env }} Demo Workflow"
 #     state: present
 #     description: "Demo Workflow"
 #     survey_enabled: false
@@ -11,20 +11,20 @@ controller_workflows: []
 #     webhook_service: "gitlab"
 #     organization: "{{ orgs }}"
 #     simplified_workflow_nodes:
-#       - identifier: "NODE_2_{{ orgs }}"
-#         workflow_job_template: "{{ orgs }} Demo Workflow"
-#         unified_job_template: "{{ orgs }} Demo Job Template"
+#       - identifier: "NODE_2_{{ orgs }}_{{ env }}"
+#         workflow_job_template: "{{ orgs }} {{ env }} Demo Workflow"
+#         unified_job_template: "{{ orgs }} {{ env }} Demo Job Template"
 #         job_type: run
 #         organization: "{{ orgs }}"
-#         workflow: "{{ orgs }} Demo Workflow"
+#         workflow: "{{ orgs }} {{ env }} Demo Workflow"
 #
-#       - identifier: "NODE_1_{{ orgs }}"
-#         workflow_job_template: "{{ orgs }} Demo Workflow"
-#         unified_job_template: "{{ orgs }} Demo Project"
+#       - identifier: "NODE_1_{{ orgs }}_{{ env }}"
+#         workflow_job_template: "{{ orgs }} {{ env }} Demo Workflow"
+#         unified_job_template: "{{ orgs }} {{ env }} Demo Project"
 #         organization: "{{ orgs }}"
-#         workflow: "{{ orgs }} Demo Workflow"
+#         workflow: "{{ orgs }} {{ env }} Demo Workflow"
 #         success_nodes:
-#           - "NODE_2_{{ orgs }}"
+#           - "NODE_2_{{ orgs }}_{{ env }}"
 #     notification_templates_started: []
 #     notification_templates_success: []
 #     notification_templates_error: []
