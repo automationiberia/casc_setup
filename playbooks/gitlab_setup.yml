@@ -36,12 +36,4 @@
       loop_control:
         loop_var: __gitlab_branches_item
       tags: git-branches
-
-    - name: GitLab create project access token
-      ansible.builtin.include_role:
-        name: automationiberia.casc_setup.gitlab_setup
-        tasks_from: create_project_token.yml
-        apply:
-          tags: git-project-token
-      tags: git-project-token
 ...
